@@ -1,25 +1,80 @@
-"use strict";
-
-import Figshario from './figshario';
+import { Figshario } from './figshario';
+//import Preload from './util';
 
 let viewport = document.getElementById('viewport');
 let figshario = new Figshario(viewport);
-figshario.setString('Adrian Castravete');
-figshario.generate();
+//let preload;
+//
+//preload = new Preload(figshario);
+//preload.preload([
+//  'assets/images/grassy.gif',
+//  'assets/images/figplayer.gif'
+//], function () {
+//  figshario.loadLevel('assets/maps/level1.json');
+//});
 
-let textField = document.createElement('input');
-textField.setAttribute('type', 'text');
-textField.setAttribute('size', '40');
-textField.setAttribute('value', '');
-textField.addEventListener('keyup', function () {
-  let value = textField.value;
+figshario.start();
+figshario.loadLevel('assets/maps/level1.json');
 
-  if (/^[0-9a-f]+$/i.test(value)) {
-    figshario.setHexString(value);
-  } else {
-    figshario.setString(value);
+resize();
+window.addEventListener('resize', resize);
+window.addEventListener('keydown', function (evt) {
+  let key;
+
+  key = handleKey(evt);
+
+  if (key) {
+    figshario.keyDown(key);
+    evt.preventDefault();
   }
-  figshario.generate();
 });
-document.body.appendChild(textField);
+window.addEventListener('keyup', function (evt) {
+  let key;
+
+  key = handleKey(evt);
+
+  if (key) {
+    figshario.keyUp(key);
+    evt.preventDefault();
+  }
+});
+
+function handleKey(evt) {
+  let key;
+
+  switch (evt.keyCode) {
+  case 37:
+    key = 'left';
+    break;
+  case 38:
+    key = 'top';
+    break;
+  case 39:
+    key = 'right';
+    break;
+  case 40:
+    key = 'down';
+    break;
+  case 13:
+    key = 'start';
+    break;
+  case 17:
+    key = 'button_b';
+    break;
+  case 32:
+    key = 'button_a';
+    break;
+  case 114:
+    key = 'debug';
+    break;
+  default:
+    key = null;
+  }
+
+  return key;
+}
+
+function resize() {
+  figshario.resize(window.innerWidth, window.innerHeight);
+}
 
