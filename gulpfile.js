@@ -1,5 +1,4 @@
 var browserify = require('browserify');
-var babelify = require('babelify');
 var gulp = require('gulp');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
@@ -7,11 +6,18 @@ var uglify = require('gulp-uglify');
 var watch = require('gulp-watch');
 var runSequence = require('run-sequence');
 var plumber = require('gulp-plumber');
+var coffee = require('gulp-coffee');
+
+gulp.task('coffee', function () {
+	return gulp.src('./src/**/*.coffee')
+	  .pipe(plumber())
+	  .pipe(coffee({bare: true}))
+	  .pipe(gulp.dest('./src/'))
+});
 
 gulp.task('build', function () {
   // set up the browserify instance on a task basis
-  var b = browserify({entries: './src/starter.js', debug: true})
-    .transform(babelify, {presets: ['es2015']});
+  var b = browserify({entries: './src/starter.js', debug: true});
 
   return b.bundle()
     .on('error', function (err) {
@@ -26,11 +32,11 @@ gulp.task('build', function () {
 });
 
 gulp.task('watch', function () {
-  return gulp.src('./src/**/*.js')
-    .pipe(watch('./src/**/*.js'))
+  return gulp.src('./src/**/*.coffee')
+    .pipe(watch('./src/**/*.coffee'))
     .on('change', function (fileName) {
       console.info(fileName + ' changed; rebuilding');
-      runSequence('build');
+      runSequence('coffee', 'build');
     });
 });
 
