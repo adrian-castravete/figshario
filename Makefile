@@ -7,4 +7,10 @@ watch:
 	gulp watch
 
 server:
-	python3 -m http.server 8086 || python2 -m SimpleHTTPServer 8086
+	python3 server.py
+
+dev:
+	python3 server.py --debug --editor
+
+editor:
+	python3 server.py --editor

@@ -1,0 +1,12 @@
+{% extends "engine.html" %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}" />
+{% endblock %}
+{% block body %}
+<div id="figsharioEngineContainer">
+{{ super() }}
+</div>
+<div id="figsharioEditorControls">
+</div>
+{% endblock %}

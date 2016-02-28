@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/engine.css') }}" />
+{% endblock %}
+{% block body %}
+<canvas id="figsharioViewport">
+  Your browser doesn't understand the <b>HTML5</b> <code>&lt;canvas&gt;</code> tag.
+</canvas>
+{% endblock %}

@@ -10,7 +10,7 @@ var plumber = require('gulp-plumber');
 
 gulp.task('build', function () {
   // set up the browserify instance on a task basis
-  var b = browserify({entries: './src/starter.js', debug: true})
+  var b = browserify({entries: './src-js/starter.js', debug: true})
     .transform(babelify, {presets: ['es2015']});
 
   return b.bundle()
@@ -22,12 +22,12 @@ gulp.task('build', function () {
     .pipe(buffer())
         // Add transformation tasks to the pipeline here.
         //.pipe(uglify())
-    .pipe(gulp.dest('./js/'));
+    .pipe(gulp.dest('./figshario/assets/js/'));
 });
 
 gulp.task('watch', function () {
-  return gulp.src('./src/**/*.js')
-    .pipe(watch('./src/**/*.js'))
+  return gulp.src('./src-js/**/*.js')
+    .pipe(watch('./src-js/**/*.js'))
     .on('change', function (fileName) {
       console.info(fileName + ' changed; rebuilding');
       runSequence('build');
