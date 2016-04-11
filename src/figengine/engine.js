@@ -1,6 +1,4 @@
-import { FigsharioLevel } from './level';
-
-export class Figshario {
+export default class Figengine {
   constructor(canvas) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
@@ -51,20 +49,14 @@ export class Figshario {
       if (this.oldTick == null) {
         this.oldTick = tick;
       }
-      // Too unstable
-      //delta = (tick - this.oldTick) / 1000.0;
       delta = 0.02;
       this.level.update(tick, delta);
       this.oldTick = tick;
     }
     if (this.running) {
       this.zoom = Math.min(this.canvas.width / 320, this.canvas.height / 200) | 0;
-      /* Two functions to deal with updating and drawing frame management.
-      setTimeout(() => this.update(Date.now()), 1);
-      /*/ // One function to deal with updating and drawing frame management.
       this.draw();
       window.requestAnimationFrame((newTick) => this.update(newTick));
-      //*/
     }
   }
 
@@ -84,27 +76,9 @@ export class Figshario {
         this.debugScreen(g);
       }
     }
-
-    if (this.running) {
-      /* Two functions to deal with updating and drawing frame management.
-      window.requestAnimationFrame((newTick) => this.draw(newTick));
-      //*/ // One function to deal with updating and drawing frame management.
-    }
   }
 
   drawBackground() {
-    let g, c, gd;
-
-    c = this.canvas;
-    g = this.context;
-
-    gd = g.createLinearGradient(0, 0, 0, c.height);
-    gd.addColorStop(0.00, '#242448');
-    gd.addColorStop(0.75, '#486bff');
-    gd.addColorStop(1.00, '#2448b6');
-
-    g.fillStyle = gd;
-    g.fillRect(0, 0, c.width, c.height);
   }
 
   debugScreen(g) {
@@ -189,10 +163,6 @@ export class Figshario {
     c = this.canvas;
     c.width = width;
     c.height = height;
-  }
-
-  loadLevel(fileName) {
-    this.level = new FigsharioLevel(this, fileName);
   }
 
   setCamera(x, y) {

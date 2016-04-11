@@ -1,17 +1,7 @@
-import { Figshario } from './figshario';
-//import Preload from './util';
+import Figshario from './figshario/figshario';
 
 let viewport = document.getElementById('viewport');
 let figshario = new Figshario(viewport);
-//let preload;
-//
-//preload = new Preload(figshario);
-//preload.preload([
-//  'assets/images/grassy.gif',
-//  'assets/images/figplayer.gif'
-//], function () {
-//  figshario.loadLevel('assets/maps/level1.json');
-//});
 
 figshario.start();
 figshario.loadLevel('assets/maps/level1.json');
@@ -77,4 +67,3 @@ function handleKey(evt) {
 function resize() {
   figshario.resize(window.innerWidth, window.innerHeight);
 }
-
