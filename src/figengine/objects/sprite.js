@@ -1,4 +1,4 @@
-import FSObject from './fsobject';
+import FSObject from "./fsobject";
 
 export default class Sprite extends FSObject {
   constructor(engine, level) {
@@ -11,9 +11,7 @@ export default class Sprite extends FSObject {
   }
 
   loadSpriteSheet(sheetName) {
-    let spr;
-
-    spr = new Image();
+    let spr = new Image();
     spr.src = sheetName;
 
     this.spriteSheet = spr;
@@ -32,15 +30,13 @@ export default class Sprite extends FSObject {
   }
 
   update(tick, delta) {
-    let anim, otick;
-
     if (this.spriteOldTick == null) {
       this.spriteOldTick = tick;
     }
     super.update(tick, delta);
-    anim = this.animations[this.currentAnim];
+    let anim = this.animations[this.currentAnim];
     if (anim) {
-      otick = this.spriteOldTick;
+      let otick = this.spriteOldTick;
       if (otick < tick - anim.delay) {
         this.frame++;
         this.resetFrame(anim);
@@ -55,7 +51,7 @@ export default class Sprite extends FSObject {
     if (this.frame >= anim.length) {
       this.frame = 0;
       if (anim.callback) {
-        if (typeof anim.callback === 'function') {
+        if (typeof anim.callback === "function") {
           anim.callback();
         } else {
           this.setAnimation(anim.callback);

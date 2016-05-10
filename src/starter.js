@@ -1,14 +1,33 @@
-import Figshario from './figshario/figshario';
+import Figshario from "./figshario/figshario";
 
-let viewport = document.getElementById('viewport');
+let viewport = document.getElementById("viewport");
 let figshario = new Figshario(viewport);
 
 figshario.start();
-figshario.loadLevel('assets/maps/level1.json');
+figshario.loadLevel("assets/maps/level1.json");
+
+let KEY_TRANSLATIONS = {
+  37: "left",
+  38: "up",
+  39: "right",
+  40: "down",
+  13: "start",
+  17: "buttonB",
+  32: "buttonA",
+  114: "debug"
+};
+
+function handleKey(evt) {
+  return KEY_TRANSLATIONS[evt.keyCode];
+}
+
+function resize() {
+  figshario.resize(window.innerWidth, window.innerHeight);
+}
 
 resize();
-window.addEventListener('resize', resize);
-window.addEventListener('keydown', function (evt) {
+window.addEventListener("resize", resize);
+window.addEventListener("keydown", (evt) => {
   let key;
 
   key = handleKey(evt);
@@ -18,7 +37,7 @@ window.addEventListener('keydown', function (evt) {
     evt.preventDefault();
   }
 });
-window.addEventListener('keyup', function (evt) {
+window.addEventListener("keyup", (evt) => {
   let key;
 
   key = handleKey(evt);
@@ -28,42 +47,3 @@ window.addEventListener('keyup', function (evt) {
     evt.preventDefault();
   }
 });
-
-function handleKey(evt) {
-  let key;
-
-  switch (evt.keyCode) {
-  case 37:
-    key = 'left';
-    break;
-  case 38:
-    key = 'top';
-    break;
-  case 39:
-    key = 'right';
-    break;
-  case 40:
-    key = 'down';
-    break;
-  case 13:
-    key = 'start';
-    break;
-  case 17:
-    key = 'button_b';
-    break;
-  case 32:
-    key = 'button_a';
-    break;
-  case 114:
-    key = 'debug';
-    break;
-  default:
-    key = null;
-  }
-
-  return key;
-}
-
-function resize() {
-  figshario.resize(window.innerWidth, window.innerHeight);
-}

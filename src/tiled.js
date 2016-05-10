@@ -1,14 +1,13 @@
-import Layer from './figengine/layer';
-import Level from './figengine/level';
+import Layer from "./figengine/layer";
+import Level from "./figengine/level";
 
 class TiledLayer extends Layer {
   findTileset(tilesets, tileIndex) {
-    let output, topGid, tileset;
-
-    output = null;
+    let output = null;
+    let topGid = null;
     if (tileIndex > 0) {
-      for (let i = 0; i < tilesets.length; i++) {
-        tileset = tilesets[i];
+      for (let i = 0, len = tilesets.length; i < len; i++) {
+        let tileset = tilesets[i];
         if (tileIndex >= tileset.firstgid && (!topGid || tileset.firstgid > topGid)) {
           output = tileset;
           topGid = tileset.firstgid;
@@ -25,7 +24,7 @@ class TiledLayer extends Layer {
     }
 
     let found = false;
-    for (let i = 0; !found && i < this.tilesets.length; i++) {
+    for (let i = 0, len = this.tilesets.length; !found && i < len; i++) {
       if (tileset === this.tilesets[i]) {
         found = true;
       }
@@ -36,35 +35,31 @@ class TiledLayer extends Layer {
   }
 
   loadTiledLayerData(tilesets, layerData) {
-    let tileIndex, tileset, tiles, tile;
-
     this.width = layerData.width;
     this.height = layerData.height;
-    if (layerData.properties && layerData.properties.type === 'playfield') {
+    if (layerData.properties && layerData.properties.type === "playfield") {
       this.isSolid = true;
     }
 
     this.tilesets = [];
-    tiles = [];
-    for (let y = 0; y < this.height; y++) {
+    let tiles = [];
+    for (let y = 0, ylen = this.height; y < ylen; y++) {
       tiles.push([]);
-      for (let x = 0; x < this.width; x++) {
-        tile = null;
+      for (let x = 0, xlen = this.width; x < xlen; x++) {
+        let tile = null;
+        let tileIndex = layerData.data[y * this.width + x];
+        let tileset = this.findTileset(tilesets, tileIndex);
 
-        tileIndex = layerData.data[y * this.width + x];
-        tileset = this.findTileset(tilesets, tileIndex);
         this.watchTileset(tileset);
 
         if (tileIndex && tileset) {
-          let props, ctype, cellsX, offset, twidth, theight;
+          let twidth = tileset.tilewidth;
+          let theight = tileset.tileheight;
 
-          twidth = tileset.tilewidth;
-          theight = tileset.tileheight;
-
-          props = tileset.tileproperties[tileIndex - tileset.firstgid];
-          ctype = props ? props.ctype : null;
-          cellsX = tileset.imagewidth / twidth | 0;
-          offset = tileIndex - tileset.firstgid;
+          let props = tileset.tileproperties[tileIndex - tileset.firstgid];
+          let ctype = props ? props.ctype : null;
+          let cellsX = tileset.imagewidth / twidth | 0;
+          let offset = tileIndex - tileset.firstgid;
 
           tile = {
             x: x * twidth,
@@ -74,7 +69,7 @@ class TiledLayer extends Layer {
             sx: offset % cellsX * twidth,
             sy: (offset / cellsX | 0) * theight,
             img: tileset.image,
-            ctype: ctype
+            ctype
           };
         }
 
@@ -87,32 +82,30 @@ class TiledLayer extends Layer {
 }
 
 export default class TiledLevel extends Level {
-  loadTiledData(data) {
-    let layers, layer, tileset, tilesets, imageSrc, layerData;
-
+  loadLevelData(data) {
     console.debug(data);
-    tilesets = [];
-    for (let i = 0; i < data.tilesets.length; i++) {
-      tileset = data.tilesets[i];
-      imageSrc = tileset.image;
+    let tilesets = [];
+    for (let i = 0, len = data.tilesets.length; i < len; i++) {
+      let tileset = data.tilesets[i];
+      let imageSrc = tileset.image;
       tileset.image = new Image();
       tileset.image.onload = () => data.tilesets[i].loaded = true;
       tileset.image.src = imageSrc;
       tilesets.push(tileset);
     }
 
-    layers = [];
-    for (let j = 0; j < data.layers.length; j++) {
-      layerData = data.layers[j];
-      if (layerData.type === 'tilelayer') {
-        layer = new TiledLayer(this.engine, data.tilewidth, data.tileheight);
+    let layers = [];
+    for (let j = 0, jlen = data.layers.length; j < jlen; j++) {
+      let layerData = data.layers[j];
+      if (layerData.type === "tilelayer") {
+        let layer = new TiledLayer(this.engine, data.tilewidth, data.tileheight);
         layer.loadTiledLayerData(tilesets, layerData);
         if (layer.isSolid) {
           this.solidLayer = layer;
         }
         layers.push(layer);
-      } else if (layerData.type === 'objectgroup') {
-        for (let i = 0; i < layerData.objects.length; i++) {
+      } else if (layerData.type === "objectgroup") {
+        for (let i = 0, len = layerData.objects.length; i < len; i++) {
           this.createObject(layerData.objects[i]);
         }
       }

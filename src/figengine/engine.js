@@ -1,7 +1,7 @@
 export default class Figengine {
   constructor(canvas) {
     this.canvas = canvas;
-    this.context = canvas.getContext('2d');
+    this.context = canvas.getContext("2d");
     this.zoom = 2;
     this.running = false;
     this.cameraX = 0;
@@ -12,16 +12,16 @@ export default class Figengine {
       right: false,
       down: false,
       start: false,
-      button_a: false,
-      button_b: false,
-      debug: true
+      buttonA: false,
+      buttonB: false,
+      debug: false
     };
     this.oldTick = null;
     this.debugEnabled = false;
-    this.debugTopLeftText = '';
-    this.debugTopRightText = '';
-    this.debugBottomLeftText = '';
-    this.debugBottomRightText = '';
+    this.debugTopLeftText = "";
+    this.debugTopRightText = "";
+    this.debugBottomLeftText = "";
+    this.debugBottomRightText = "";
   }
 
   start() {
@@ -82,39 +82,37 @@ export default class Figengine {
   }
 
   debugScreen(g) {
-    let lines, offset;
-
     if (this.debugEnabled) {
-      this.debugTopLeftText = 'Debug Screen\n' + this.debugTopLeftText;
+      this.debugTopLeftText = `Debug Screen\n${this.debugTopLeftText}`;
 
       g.save();
-      g.font = 'bold 12px monospace';
-      g.shadowColor = '#000000';
+      g.font = "bold 12px monospace";
+      g.shadowColor = "#000000";
       g.shadowBlur = 2;
-      g.fillStyle = '#ffffff';
+      g.fillStyle = "#ffffff";
 
-      g.textBaseline = 'top';
-      g.fontJustify = 'left';
-      lines = this.debugTopLeftText.split('\n');
+      g.textBaseline = "top";
+      g.fontJustify = "left";
+      let lines = this.debugTopLeftText.split("\n");
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], 0, 12 * i);
       }
 
-      g.fontJustify = 'right';
-      lines = this.debugTopRightText.split('\n');
+      g.fontJustify = "right";
+      lines = this.debugTopRightText.split("\n");
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], window.innerWidth - 1, 12 * i);
       }
 
-      g.textBaseline = 'bottom';
-      lines = this.debugBottomRightText.split('\n');
-      offset = window.innerHeight - 1 - lines.length * 12;
+      g.textBaseline = "bottom";
+      lines = this.debugBottomRightText.split("\n");
+      let offset = window.innerHeight - 1 - lines.length * 12;
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], window.innerWidth - 1, offset + 12 * i);
       }
 
-      g.fontJustify = 'left';
-      lines = this.debugBottomLeftText.split('\n');
+      g.fontJustify = "left";
+      lines = this.debugBottomLeftText.split("\n");
       offset = window.innerHeight - 1 - lines.length * 12;
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], 0, offset + 12 * i);
@@ -122,10 +120,10 @@ export default class Figengine {
 
       g.restore();
 
-      this.debugTopLeftText = '';
-      this.debugTopRightText = '';
-      this.debugBottomLeftText = '';
-      this.debugBottomRightText = '';
+      this.debugTopLeftText = "";
+      this.debugTopRightText = "";
+      this.debugBottomLeftText = "";
+      this.debugBottomRightText = "";
     }
   }
 
@@ -135,25 +133,25 @@ export default class Figengine {
 
   addTopLeftDebugLine(line) {
     if (this.debugEnabled) {
-      this.debugTopLeftText += line + '\n';
+      this.debugTopLeftText += `${line}\n`;
     }
   }
 
   addTopRightDebugLine(line) {
     if (this.debugEnabled) {
-      this.debugTopRightText += line + '\n';
+      this.debugTopRightText += `${line}\n`;
     }
   }
 
   addBottomLeftDebugLine(line) {
     if (this.debugEnabled) {
-      this.debugBottomLeftText += line + '\n';
+      this.debugBottomLeftText += `${line}\n`;
     }
   }
 
   addBottomRightDebugLine(line) {
     if (this.debugEnabled) {
-      this.debugTopLeftText += line + '\n';
+      this.debugTopLeftText += `${line}\n`;
     }
   }
 
@@ -166,7 +164,7 @@ export default class Figengine {
   }
 
   setCamera(x, y) {
-    // TODO: make sure the camera doesn't make the viewport overflow
+    // TODO: make sure the camera doesn"t make the viewport overflow
     this.cameraX = x;
     this.cameraY = y;
   }
@@ -177,7 +175,7 @@ export default class Figengine {
 
   keyUp(key) {
     this.keys[key] = false;
-    if (key === 'debug') {
+    if (key === "debug") {
       this.debugEnabled = !this.debugEnabled;
     }
   }

@@ -1,4 +1,4 @@
-import Sprite from '../../figengine/objects/sprite';
+import Sprite from "../../figengine/objects/sprite";
 
 export default class MovingSprite extends Sprite {
   constructor(engine, level) {
@@ -85,24 +85,22 @@ export default class MovingSprite extends Sprite {
 
     // Inside wall
     tile = this.level.solidLayer.getAt(this.x + this.bounds.centerX, this.y + this.bounds.centerY);
-    if (tile && tile.ctype === 'solid') {
+    if (tile && tile.ctype === "solid") {
       this.horizVel = 0;
       this.vertVel = 0;
     }
   }
 
   isOnAnySolid(tile) {
-    return tile && (tile.ctype === 'solid' ||
+    return tile && (tile.ctype === "solid" ||
                     this.isOnSlantRight(tile) ||
                     this.isOnSlantLeft(tile));
   }
 
   isOnSlantRight(tile) {
-    let x, y;
-
-    if (tile.ctype === 'slantRight') {
-      x = this.x + this.bounds.centerX - tile.x | 0;
-      y = this.y + this.bounds.down - tile.y | 0;
+    if (tile.ctype === "slantRight") {
+      let x = this.x + this.bounds.centerX - tile.x | 0;
+      let y = this.y + this.bounds.down - tile.y | 0;
 
       if (y >= x) {
         return true;
@@ -113,11 +111,9 @@ export default class MovingSprite extends Sprite {
   }
 
   isOnSlantLeft(tile) {
-    let x, y;
-
-    if (tile.ctype === 'slantLeft') {
-      x = this.x + this.bounds.centerX - tile.x | 0;
-      y = this.y + this.bounds.down - tile.y | 0;
+    if (tile.ctype === "slantLeft") {
+      let x = this.x + this.bounds.centerX - tile.x | 0;
+      let y = this.y + this.bounds.down - tile.y | 0;
 
       if (y >= this.level.solidLayer.tileHeight - 1 - x) {
         return true;

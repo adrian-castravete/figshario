@@ -4,7 +4,7 @@ export default class Loader {
 
     xhr = new XMLHttpRequest();
     xhr.onreadystatechange = (evt) => this.onxhr(evt);
-    xhr.open('GET', fileName);
+    xhr.open("GET", fileName);
     xhr.send();
   }
 

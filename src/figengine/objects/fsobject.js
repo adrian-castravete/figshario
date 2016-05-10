@@ -12,8 +12,7 @@ export default class FSObject {
     this.sprY = 0;
   }
 
-  update(tick, delta) {
-  }
+  update() {}
 
   draw(g) {
     if (this.spriteSheet) {

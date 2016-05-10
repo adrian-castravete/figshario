@@ -14,20 +14,18 @@ export default class Layer {
   }
 
   buildBackground() {
-    let tile, backScreen, g;
-
-    backScreen = document.createElement('canvas');
+    let backScreen = document.createElement("canvas");
     backScreen.width = this.tileWidth * this.width;
     backScreen.height = this.tileHeight * this.height;
 
-    g = backScreen.getContext('2d');
+    let g = backScreen.getContext("2d");
     for (let j = 0; j < this.tiles.length; j++) {
       for (let i = 0; i < this.tiles[j].length; i++) {
-        tile = this.tiles[j][i];
+        let tile = this.tiles[j][i];
         if (tile) {
           g.drawImage(tile.img, tile.sx, tile.sy, tile.w, tile.h,
                       i * this.tileWidth, j * this.tileHeight, tile.w, tile.h);
-          // g.strokeStyle = '#000000';
+          // g.strokeStyle = "#000000";
           // g.strokeRect(i * this.tileWidth + 0.5, j * this.tileHeight + 0.5, 16, 16);
         }
       }
@@ -53,14 +51,14 @@ export default class Layer {
   }
 
   getAt(x, y) {
-    let cx, cy;
-
-    cx = x / this.tileWidth | 0;
-    cy = y / this.tileHeight | 0;
+    let cx = x / this.tileWidth | 0;
+    let cy = y / this.tileHeight | 0;
 
     if (cx >= 0 && cy >= 0 &&
         cy < this.tiles.length && cx < this.tiles[cy].length) {
       return this.tiles[cy][cx];
     }
+
+    return null;
   }
 }

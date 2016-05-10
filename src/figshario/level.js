@@ -1,6 +1,10 @@
-import Coin from './objects/coin';
-import Player from './objects/player';
-import TiledLevel from '../tiled';
+import Coin from "./objects/coin";
+import Player from "./objects/player";
+import TiledLevel from "../tiled";
+
+let OBJ_CLASS_MAPPING = {
+  "figplayer": Player
+};
 
 export default class FigsharioLevel extends TiledLevel {
   constructor(engine, fileName) {
@@ -20,29 +24,29 @@ export default class FigsharioLevel extends TiledLevel {
     }
 
     if (this.player) {
-      this.engine.addDebugLine('Player:');
-      this.engine.addDebugLine('  .position: ' + this.player.x + '×' + this.player.y);
-      this.engine.addDebugLine('  .velocity: ' + this.player.horizVel.toFixed(4) + '×' + this.player.vertVel.toFixed(4));
+      this.engine.addDebugLine("Player:");
+      this.engine.addDebugLine(`  .position: ${this.player.x}×${this.player.y}`);
+      let hv = this.player.horizVel.toFixed(4);
+      let vv = this.player.vertVel.toFixed(4);
+      this.engine.addDebugLine(`  .velocity: ${hv}×${vv}`);
     }
-    this.engine.addDebugLine('Objects: ' + this.objects.length);
+    this.engine.addDebugLine(`Objects: ${this.objects.length}`);
   }
 
   generateCollectible() {
-    let x, y, c, tile, w, h, s;
-
-    s = this.solidLayer;
+    let s = this.solidLayer;
     if (!s) {
       return;
     }
 
-    w = s.width * s.tileWidth;
-    h = s.height * s.tileHeight;
-    x = Math.random() * w;
-    y = Math.random() * h;
-    tile = s.getAt(x, y);
+    let w = s.width * s.tileWidth;
+    let h = s.height * s.tileHeight;
+    let x = Math.random() * w;
+    let y = Math.random() * h;
+    let tile = s.getAt(x, y);
 
-    if (!tile || tile.ctype === 'empty') {
-      c = new Coin(this.engine, this);
+    if (!tile || tile.ctype === "empty") {
+      let c = new Coin(this.engine, this);
       c.x = x - 4;
       c.y = y - 4;
 
@@ -52,20 +56,14 @@ export default class FigsharioLevel extends TiledLevel {
   }
 
   createObject(objData) {
-    let obj, oCls;
-
-    switch (objData.name) {
-    case 'figplayer':
-      oCls = Player;
-      break;
-    }
+    let oCls = OBJ_CLASS_MAPPING[objData.name];
 
     if (oCls) {
-      obj = new oCls(this.engine, this);
-      obj.x = objData.x|0;
-      obj.y = (objData.y|0) - (objData.height|0);
+      let obj = new oCls(this.engine, this);
+      obj.x = objData.x | 0;
+      obj.y = (objData.y | 0) - (objData.height | 0);
 
-      if (objData.name === 'figplayer') {
+      if (objData.name === "figplayer") {
         this.player = obj;
       }
 

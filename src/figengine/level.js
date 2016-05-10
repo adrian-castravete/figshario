@@ -1,4 +1,4 @@
-import Loader from './util';
+import Loader from "./util";
 
 export default class Level extends Loader {
   constructor(engine, fileName) {
@@ -20,30 +20,31 @@ export default class Level extends Loader {
   }
 
   update(tick, delta) {
-    for (let i = 0; i < this.objects.length; i++) {
-      this.objects[i].update(tick, delta);
+    for (let i = 0, len = this.objects.length; i < len; i++) {
+      let obj = this.objects[i];
+
+      if (obj) {
+        obj.update(tick, delta);
+      }
     }
   }
 
   draw(g) {
-    let layer, obj;
-
     g.save();
     g.translate(-this.engine.cameraX | 0, -this.engine.cameraY | 0);
-    for (let i = 0; i < this.layers.length; i++) {
-      layer = this.layers[i];
+    for (let i = 0, len = this.layers.length; i < len; i++) {
+      let layer = this.layers[i];
       if (layer.isBackground) {
         layer.draw(g);
       }
     }
 
-    for (let i = 0; i < this.objects.length; i++) {
-      obj = this.objects[i];
-      obj.draw(g);
+    for (let i = 0, len = this.objects.length; i < len; i++) {
+      this.objects[i].draw(g);
     }
 
-    for (let i = 0; i < this.layers.length; i++) {
-      layer = this.layers[i];
+    for (let i = 0, len = this.layers.length; i < len; i++) {
+      let layer = this.layers[i];
       if (!layer.isBackground) {
         layer.draw(g);
       }
@@ -54,10 +55,13 @@ export default class Level extends Loader {
   onLoaded(data) {
     data = JSON.parse(data);
     this.resetLevelData();
-    this.loadTiledData(data);
+    this.loadLevelData(data);
   }
 
   createObject() {  /* objData */
+  }
+
+  loadLevelData() {  /* levelData */
   }
 }
 
