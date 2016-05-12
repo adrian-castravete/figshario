@@ -101,27 +101,27 @@ export default class Figengine {
       g.textBaseline = "top";
       g.fontJustify = "left";
       let lines = this.debugTopLeftText.split("\n");
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0; i < lines.length; i += 1) {
         g.fillText(lines[i], 0, 12 * i);
       }
 
       g.fontJustify = "right";
       lines = this.debugTopRightText.split("\n");
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0; i < lines.length; i += 1) {
         g.fillText(lines[i], window.innerWidth - 1, 12 * i);
       }
 
       g.textBaseline = "bottom";
       lines = this.debugBottomRightText.split("\n");
       let offset = window.innerHeight - 1 - lines.length * 12;
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0; i < lines.length; i += 1) {
         g.fillText(lines[i], window.innerWidth - 1, offset + 12 * i);
       }
 
       g.fontJustify = "left";
       lines = this.debugBottomLeftText.split("\n");
       offset = window.innerHeight - 1 - lines.length * 12;
-      for (let i = 0; i < lines.length; i++) {
+      for (let i = 0; i < lines.length; i += 1) {
         g.fillText(lines[i], 0, offset + 12 * i);
       }
 

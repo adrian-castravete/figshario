@@ -11,7 +11,7 @@ export default class Sprite extends FSObject {
   }
 
   loadSpriteSheet(sheetName) {
-    let spr = new Image();
+    let spr = new window.Image();
     spr.src = sheetName;
 
     this.spriteSheet = spr;
@@ -38,7 +38,7 @@ export default class Sprite extends FSObject {
     if (anim) {
       let otick = this.spriteOldTick;
       if (otick < tick - anim.delay) {
-        this.frame++;
+        this.frame += 1;
         this.resetFrame(anim);
         this.spriteOldTick = tick;
       }

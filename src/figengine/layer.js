@@ -7,26 +7,39 @@ export default class Layer {
     this.tileHeight = tileHeight;
     this.width = 0;
     this.height = 0;
+    this.isTiled = false;
     this.isBackground = true;
-    this.isSolid = false;
-    this.tilesets = [];
-    this.everythingLoaded = false;
   }
 
   buildBackground() {
-    let backScreen = document.createElement("canvas");
-    backScreen.width = this.tileWidth * this.width;
-    backScreen.height = this.tileHeight * this.height;
+    if (!this.tiles) {
+      return;
+    }
 
+    let backScreen = document.createElement("canvas");
     let g = backScreen.getContext("2d");
-    for (let j = 0; j < this.tiles.length; j++) {
-      for (let i = 0; i < this.tiles[j].length; i++) {
-        let tile = this.tiles[j][i];
+    if (this.isTiled) {
+      backScreen.width = this.tileWidth * this.width;
+      backScreen.height = this.tileHeight * this.height;
+
+      for (let j = 0, jlen = this.tiles.length; j < jlen; j += 1) {
+        for (let i = 0, ilen = this.tiles[j].length; i < ilen; i += 1) {
+          let tile = this.tiles[j][i];
+          if (tile) {
+            g.drawImage(this.tileset, tile.sx, tile.sy, this.tileWidth, this.tileHeight,
+                        i * this.tileWidth, j * this.tileHeight, this.tileWidth, this.tileHeight);
+          }
+        }
+      }
+    } else {
+      backScreen.width = this.width;
+      backScreen.height = this.height;
+
+      for (let i = 0, len = this.tiles.length; i < len; i += 1) {
+        let tile = this.tiles[i];
         if (tile) {
-          g.drawImage(tile.img, tile.sx, tile.sy, tile.w, tile.h,
-                      i * this.tileWidth, j * this.tileHeight, tile.w, tile.h);
-          // g.strokeStyle = "#000000";
-          // g.strokeRect(i * this.tileWidth + 0.5, j * this.tileHeight + 0.5, 16, 16);
+          g.drawImage(this.tileset, tile.sx, tile.sy, tile.w, tile.h,
+                      tile.x, tile.y, tile.w, tile.h);
         }
       }
     }
@@ -35,28 +48,32 @@ export default class Layer {
   }
 
   draw(g) {
-    if (!this.everythingLoaded) {
-      let dorebuild = true;
-      for (let i = 0; i < this.tilesets.length; i++) {
-        if (!this.tilesets[i].loaded) {
-          dorebuild = false;
-        }
-      }
-      if (dorebuild) {
-        this.buildBackground();
-        this.everythingLoaded = true;
-      }
+    if (this.backScreen) {
+      g.drawImage(this.backScreen, 0, 0);
     }
-    g.drawImage(this.backScreen, 0, 0);
   }
 
   getAt(x, y) {
-    let cx = x / this.tileWidth | 0;
-    let cy = y / this.tileHeight | 0;
+    if (!this.tiles) {
+      return null;
+    }
 
-    if (cx >= 0 && cy >= 0 &&
-        cy < this.tiles.length && cx < this.tiles[cy].length) {
-      return this.tiles[cy][cx];
+    if (this.isTiled) {
+      let cx = x / this.tileWidth | 0;
+      let cy = y / this.tileHeight | 0;
+
+      if (cx >= 0 && cy >= 0 &&
+          cy < this.tiles.length && cx < this.tiles[cy].length) {
+        return this.tiles[cy][cx];
+      }
+    } else {
+      for (let i = 0, len = this.tiles.length; i < len; i += 1) {
+        let tile = this.tiles[i];
+
+        if (x >= tile.x && y >= tile.y && x < tile.x + tile.w && y < tile.y + tile.h) {
+          return tile;
+        }
+      }
     }
 
     return null;

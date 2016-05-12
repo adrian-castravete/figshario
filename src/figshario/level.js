@@ -1,5 +1,6 @@
 import Level from "../figengine/level.js";
 import Coin from "./objects/coin";
+import PlaygroundLayer, { ImageLayer } from "./layers";
 
 export default class FigsharioLevel extends Level {
   constructor(engine, fileName) {
@@ -54,12 +55,12 @@ export default class FigsharioLevel extends Level {
     levelData = levelData.replace("\r\n", "\n").replace("\r", "\n");
 
     let lines = levelData.split();
-    for (let j = 0, len = lines.length; j < len; j++) {
-      let chars = lines[j];
-      for (let i = 0, clen = chars.length; i < clen; i++) {
-        let cell = chars[i];
-        cell = cell;
-      }
-    }
+    let playground = new PlaygroundLayer(this.engine, lines);
+    let background = new ImageLayer(this.engine);
+    let foreground = new ImageLayer(this.engine, true);
+
+    this.layers.push(playground);
+    this.layers.push(background);
+    this.layers.push(foreground);
   }
 }

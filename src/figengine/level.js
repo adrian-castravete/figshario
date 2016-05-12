@@ -20,7 +20,7 @@ export default class Level extends Loader {
   }
 
   update(tick, delta) {
-    for (let i = 0, len = this.objects.length; i < len; i++) {
+    for (let i = 0, len = this.objects.length; i < len; i += 1) {
       let obj = this.objects[i];
 
       if (obj) {
@@ -32,18 +32,18 @@ export default class Level extends Loader {
   draw(g) {
     g.save();
     g.translate(-this.engine.cameraX | 0, -this.engine.cameraY | 0);
-    for (let i = 0, len = this.layers.length; i < len; i++) {
+    for (let i = 0, len = this.layers.length; i < len; i += 1) {
       let layer = this.layers[i];
       if (layer.isBackground) {
         layer.draw(g);
       }
     }
 
-    for (let i = 0, len = this.objects.length; i < len; i++) {
+    for (let i = 0, len = this.objects.length; i < len; i += 1) {
       this.objects[i].draw(g);
     }
 
-    for (let i = 0, len = this.layers.length; i < len; i++) {
+    for (let i = 0, len = this.layers.length; i < len; i += 1) {
       let layer = this.layers[i];
       if (!layer.isBackground) {
         layer.draw(g);
