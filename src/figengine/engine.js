@@ -1,3 +1,5 @@
+/* global window */
+
 export default class Figengine {
   constructor(canvas) {
     this.canvas = canvas;
@@ -6,6 +8,9 @@ export default class Figengine {
     this.running = false;
     this.cameraX = 0;
     this.cameraY = 0;
+    this.cameraFollowX = 0;
+    this.cameraFollowY = 0;
+    this.cameraFollowRatio = 0.95;
     this.keys = {
       left: false,
       up: false,
@@ -49,7 +54,9 @@ export default class Figengine {
       if (this.oldTick == null) {
         this.oldTick = tick;
       }
-      delta = 0.02;
+      // delta = 0.02;
+      delta = (tick - this.oldTick) / 1000.0;
+      this.moveCamera();
       this.level.update(tick, delta);
       this.oldTick = tick;
     }
@@ -164,9 +171,9 @@ export default class Figengine {
   }
 
   setCamera(x, y) {
-    // TODO: make sure the camera doesn"t make the viewport overflow
-    this.cameraX = x;
-    this.cameraY = y;
+    // TODO: make sure the camera doesn't make the viewport overflow
+    this.cameraFollowX = x;
+    this.cameraFollowY = y;
   }
 
   keyDown(key) {
@@ -182,5 +189,18 @@ export default class Figengine {
 
   isPressed(key) {
     return this.keys[key];
+  }
+
+  moveCamera() {
+    let dx = this.cameraX - this.cameraFollowX;
+    let dy = this.cameraY - this.cameraFollowY;
+
+    if (Math.sqrt(dx * dx + dy * dy) > 0.001) {
+      this.cameraX = this.cameraFollowX + dx * this.cameraFollowRatio;
+      this.cameraY = this.cameraFollowY + dy * this.cameraFollowRatio;
+    } else {
+      this.cameraX = this.cameraFollowX;
+      this.cameraY = this.cameraFollowY;
+    }
   }
 }

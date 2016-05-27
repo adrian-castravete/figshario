@@ -41,18 +41,18 @@ export default class Player extends Sprite {
       this.direction = "right";
       this.keyPressed = true;
 
-      this.horizVel += 1;
+      this.horizVel += 0.8;
       this.horizVel = Math.min(Math.max(this.horizVel, 1), 8);
     } else if (this.engine.isPressed("left")) {
       this.direction = "left";
       this.keyPressed = true;
 
-      this.horizVel -= 1;
+      this.horizVel -= 0.8;
       this.horizVel = Math.max(Math.min(this.horizVel, -1), -8);
     }
 
     if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-      this.vertVel = -12;
+      this.vertVel = -8;
       this.airborne = true;
       this.jumpStillPressed = true;
     }
@@ -83,7 +83,7 @@ export default class Player extends Sprite {
       }
     }
     if (this.airborne) {
-      this.vertVel = Math.min(16, this.vertVel + 1);
+      this.vertVel = Math.min(16, this.vertVel + 0.4);
     }
   }
 
@@ -257,7 +257,15 @@ export default class Player extends Sprite {
   }
 
   updateCamera() {
-    this.engine.setCamera(this.x, this.y);
+    let offset;
+
+    if (this.direction === "right") {
+      offset = 40;
+    } else {
+      offset = -40;
+    }
+
+    this.engine.setCamera(this.x + this.width / 2 + offset, this.y + this.height / 2);
   }
 
   draw(g) {
