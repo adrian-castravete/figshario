@@ -53,12 +53,8 @@ export default class Level extends Loader {
   }
 
   onLoaded(data) {
-    data = JSON.parse(data);
     this.resetLevelData();
     this.loadLevelData(data);
-  }
-
-  createObject() {  /* objData */
   }
 
   loadLevelData() {  /* levelData */

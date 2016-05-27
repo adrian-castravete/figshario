@@ -61,7 +61,7 @@ export default class Figengine {
       this.oldTick = tick;
     }
     if (this.running) {
-      this.zoom = Math.min(this.canvas.width / 320, this.canvas.height / 200) | 0;
+      this.zoom = Math.min(this.canvas.width / 240, this.canvas.height / 160) | 0;
       this.draw();
       window.requestAnimationFrame((newTick) => this.update(newTick));
     }

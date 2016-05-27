@@ -1,12 +1,7 @@
+import Level from "../figengine/level.js";
 import Coin from "./objects/coin";
-import Player from "./objects/player";
-import TiledLevel from "../tiled";
 
-let OBJ_CLASS_MAPPING = {
-  "figplayer": Player
-};
-
-export default class FigsharioLevel extends TiledLevel {
+export default class FigsharioLevel extends Level {
   constructor(engine, fileName) {
     super(engine, fileName);
 
@@ -55,29 +50,16 @@ export default class FigsharioLevel extends TiledLevel {
     this.collectibleDelay = Math.random() * 500 + 500 | 0;
   }
 
-  createObject(objData) {
-    let oCls = OBJ_CLASS_MAPPING[objData.name];
+  loadLevelData(levelData) {
+    levelData = levelData.replace("\r\n", "\n").replace("\r", "\n");
 
-    if (oCls) {
-      let obj = new oCls(this.engine, this);
-      obj.x = objData.x | 0;
-      obj.y = (objData.y | 0) - (objData.height | 0);
-
-      if (objData.name === "figplayer") {
-        this.player = obj;
+    let lines = levelData.split();
+    for (let j = 0, len = lines.length; j < len; j++) {
+      let chars = lines[j];
+      for (let i = 0, clen = chars.length; i < clen; i++) {
+        let cell = chars[i];
+        cell = cell;
       }
-
-      this.objects.push(obj);
-    }
-  }
-
-  removeObject(obj) {
-    let index;
-
-    index = this.objects.indexOf(obj);
-
-    if (index >= 0) {
-      this.objects.splice(index, 1);
     }
   }
 }
