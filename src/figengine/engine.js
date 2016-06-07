@@ -4,7 +4,10 @@ export default class Figengine {
   constructor(canvas) {
     this.canvas = canvas;
     this.context = canvas.getContext("2d");
+    this.viewportWidth = 320;
+    this.viewportHeight = 200;
     this.zoom = 2;
+    this.maskOutExtents = true;
     this.running = false;
     this.cameraX = 0;
     this.cameraY = 0;
@@ -61,7 +64,7 @@ export default class Figengine {
       this.oldTick = tick;
     }
     if (this.running) {
-      this.zoom = Math.min(this.canvas.width / 320, this.canvas.height / 200) | 0;
+      this.zoom = Math.min(this.canvas.width / this.viewportWidth, this.canvas.height / this.viewportHeight) | 0;
       this.draw();
       window.requestAnimationFrame((newTick) => this.update(newTick));
     }
@@ -77,12 +80,26 @@ export default class Figengine {
         g.save();
         g.translate(this.canvas.width * 0.5 | 0, this.canvas.height * 0.5 | 0);
         g.scale(this.zoom, this.zoom);
+        if (this.maskOutExtents) {
+          this.clipExtents();
+        }
         g.imageSmoothingEnabled = false;
         this.level.draw(g);
         g.restore();
         this.debugScreen(g);
       }
     }
+  }
+
+  clipExtents() {
+    let g = this.context;
+    let gw = this.viewportWidth;
+    let gh = this.viewportHeight;
+
+    g.beginPath();
+    g.rect(-gw * 0.5, -gh * 0.5, gw, gh);
+    g.closePath();
+    g.clip();
   }
 
   drawBackground() {
