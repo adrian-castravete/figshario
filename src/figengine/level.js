@@ -30,6 +30,12 @@ export default class Level extends Loader {
   }
 
   draw(g) {
+    let e = this.engine;
+    let gw = e.viewportWidth;
+    let gh = e.viewportHeight;
+    let cx = e.cameraX - gw * 0.5 | 0;
+    let cy = e.cameraY - gh * 0.5 | 0;
+
     g.save();
     g.translate(-this.engine.cameraX | 0, -this.engine.cameraY | 0);
     for (let i = 0, len = this.layers.length; i < len; i++) {
@@ -40,7 +46,11 @@ export default class Level extends Loader {
     }
 
     for (let i = 0, len = this.objects.length; i < len; i++) {
-      this.objects[i].draw(g);
+      let obj = this.objects[i];
+      if (obj.x >= cx - obj.width && obj.y >= cy - obj.height &&
+          obj.x < cx + gw && obj.y < cy + gh) {
+        obj.draw(g);
+      }
     }
 
     for (let i = 0, len = this.layers.length; i < len; i++) {

@@ -47,7 +47,12 @@ export default class Layer {
         this.everythingLoaded = true;
       }
     }
-    g.drawImage(this.backScreen, 0, 0);
+    let e = this.engine;
+    let gw = e.viewportWidth;
+    let gh = e.viewportHeight;
+    let ox = e.cameraX - gw * 0.5 | 0;
+    let oy = e.cameraY - gh * 0.5 | 0;
+    g.drawImage(this.backScreen, ox, oy, gw, gh, ox, oy, gw, gh);
   }
 
   getAt(x, y) {
