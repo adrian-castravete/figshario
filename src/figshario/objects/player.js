@@ -206,7 +206,7 @@ export default class Player extends Sprite {
   }
 
   isOnSlantRight(tile) {
-    if (tile.ctype === "slantRight") {
+    if (tile.ctype === "slopeRU") {
       let x = this.x + 16 - tile.x | 0;
       let y = this.y + 32 - tile.y | 0;
 
@@ -219,7 +219,7 @@ export default class Player extends Sprite {
   }
 
   isOnSlantLeft(tile) {
-    if (tile.ctype === "slantLeft") {
+    if (tile.ctype === "slopeLU") {
       let x = this.x + 16 - tile.x | 0;
       let y = this.y + 32 - tile.y | 0;
 

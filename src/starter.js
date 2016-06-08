@@ -4,7 +4,7 @@ let viewport = document.getElementById("viewport");
 let figshario = new Figshario(viewport);
 
 figshario.start();
-figshario.loadLevel("assets/maps/level1.json");
+figshario.loadLevel("assets/maps/level1b.json");
 
 let KEY_TRANSLATIONS = {
   37: "left",

@@ -98,7 +98,7 @@ export default class MovingSprite extends Sprite {
   }
 
   isOnSlantRight(tile) {
-    if (tile.ctype === "slantRight") {
+    if (tile.ctype === "slopeRU") {
       let x = this.x + this.bounds.centerX - tile.x | 0;
       let y = this.y + this.bounds.down - tile.y | 0;
 
@@ -111,7 +111,7 @@ export default class MovingSprite extends Sprite {
   }
 
   isOnSlantLeft(tile) {
-    if (tile.ctype === "slantLeft") {
+    if (tile.ctype === "slopeLU") {
       let x = this.x + this.bounds.centerX - tile.x | 0;
       let y = this.y + this.bounds.down - tile.y | 0;
 

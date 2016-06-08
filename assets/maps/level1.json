@@ -854,11 +854,11 @@
                 },
              "40":
                 {
-                 "ctype":"slantLeft"
+                 "ctype":"slopeLU"
                 },
              "41":
                 {
-                 "ctype":"slantRight"
+                 "ctype":"slopeRU"
                 },
              "42":
                 {
