@@ -116,13 +116,13 @@ export default class Figengine {
       g.fillStyle = "#ffffff";
 
       g.textBaseline = "top";
-      g.fontJustify = "left";
+      g.textAlign = "left";
       let lines = this.debugTopLeftText.split("\n");
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], 0, 12 * i);
       }
 
-      g.fontJustify = "right";
+      g.textAlign = "right";
       lines = this.debugTopRightText.split("\n");
       for (let i = 0; i < lines.length; i++) {
         g.fillText(lines[i], window.innerWidth - 1, 12 * i);
@@ -135,7 +135,7 @@ export default class Figengine {
         g.fillText(lines[i], window.innerWidth - 1, offset + 12 * i);
       }
 
-      g.fontJustify = "left";
+      g.textAlign = "left";
       lines = this.debugBottomLeftText.split("\n");
       offset = window.innerHeight - 1 - lines.length * 12;
       for (let i = 0; i < lines.length; i++) {
@@ -187,10 +187,14 @@ export default class Figengine {
     c.height = height;
   }
 
-  setCamera(x, y) {
+  setCamera(x, y, reset = false) {
     // TODO: make sure the camera doesn't make the viewport overflow
     this.cameraFollowX = x;
     this.cameraFollowY = y;
+    if (reset) {
+      this.cameraX = x;
+      this.cameraY = y;
+    }
   }
 
   keyDown(key) {

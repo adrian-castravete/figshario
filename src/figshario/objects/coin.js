@@ -13,7 +13,24 @@ export default class Coin extends MovingSprite {
     this.createAnimation("destroy", 32, 0, 4, 100);
     this.setAnimation("create");
 
+    this.hitbox = {
+      left: -2,
+      up: -2,
+      right: 2,
+      down: 2
+    };
+
     this.isCollectible = true;
+  }
+
+  checkCollisions() {
+    if (!this.airborne) {
+      this.horizVel = (Math.random() - 0.5) * 2;
+      this.vertVel = -3;
+      this.airborne = true;
+    }
+
+    super.checkCollisions();
   }
 
   destroy() {

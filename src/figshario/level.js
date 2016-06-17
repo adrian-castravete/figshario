@@ -60,10 +60,11 @@ export default class FigsharioLevel extends TiledLevel {
 
     if (oCls) {
       let obj = new oCls(this.engine, this);
-      obj.x = objData.x | 0;
-      obj.y = (objData.y | 0) - (objData.height | 0);
+      obj.x = objData.x + objData.width / 2 | 0;
+      obj.y = objData.y - objData.height / 2 | 0;
 
       if (objData.name === "figplayer") {
+        this.engine.setCamera(obj.x, obj.y, true);
         this.player = obj;
       }
 

@@ -16,11 +16,12 @@ export default class FSObject {
 
   draw(g) {
     if (this.spriteSheet) {
+      let w = this.width;
+      let h = this.height;
       g.save();
       g.translate(this.x, this.y);
       g.rotate(this.rotation);
-      g.drawImage(this.spriteSheet, this.sprX, this.sprY, this.width, this.height,
-                  0, 0, this.width, this.height);
+      g.drawImage(this.spriteSheet, this.sprX, this.sprY, w, h, -w / 2, -h / 2, w, h);
       g.restore();
     }
   }

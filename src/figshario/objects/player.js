@@ -1,11 +1,20 @@
-import Sprite from "../../figengine/objects/sprite";
+import MovingSprite from "./moving-sprite";
 
-export default class Player extends Sprite {
+let COLLECTION_PROXIMITY = 16;
+
+export default class Player extends MovingSprite {
   constructor(engine, level) {
     super(engine, level);
 
     this.width = 32;
     this.height = 40;
+    this.hitbox = {
+      left: -4,
+      up: -12,
+      right: 4,
+      down: 12
+    };
+
     this.loadSpriteSheet("assets/images/figplayer.gif");
     this.createAnimation("lookRight", 0, 0, 2, 250);
     this.createAnimation("lookLeft", 0, 40, 2, 250);
@@ -15,7 +24,7 @@ export default class Player extends Sprite {
 
     this.direction = "right";
     this.airborne = false;
-    this.keyPressed = false;
+    this.directionPressed = false;
     this.jumpStillPressed = false;
     this.horizVel = 0;
     this.vertVel = 0;
@@ -28,27 +37,37 @@ export default class Player extends Sprite {
 
     this.handleKeys(delta);
     this.chooseAnimation();
-    this.handleMovement(delta);
-    this.checkCollisions();
     this.handleCollecting();
 
     this.updateCamera();
   }
 
+  checkCollisions() {
+    super.checkCollisions();
+
+    for (let i = 0, len = this.level.objects.length; i < len; i += 1) {
+      let obj = this.level.objects[i];
+
+      if (obj.isCollectible && this.closeTo(obj, COLLECTION_PROXIMITY) || obj.y > 10000) {
+        this.collect(obj);
+      }
+    }
+  }
+
   handleKeys() {
-    this.keyPressed = false;
+    this.directionPressed = false;
     if (this.engine.isPressed("right")) {
       this.direction = "right";
-      this.keyPressed = true;
+      this.directionPressed = true;
 
       this.horizVel += 0.8;
-      this.horizVel = Math.min(Math.max(this.horizVel, 1), 8);
+      this.horizVel = Math.min(Math.max(this.horizVel, 1), 4);
     } else if (this.engine.isPressed("left")) {
       this.direction = "left";
-      this.keyPressed = true;
+      this.directionPressed = true;
 
       this.horizVel -= 0.8;
-      this.horizVel = Math.max(Math.min(this.horizVel, -1), -8);
+      this.horizVel = Math.max(Math.min(this.horizVel, -1), -4);
     }
 
     if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
@@ -62,33 +81,8 @@ export default class Player extends Sprite {
     }
   }
 
-  handleMovement() {
-    let tile;
-
-    this.x += this.horizVel | 0;
-    this.y += this.vertVel | 0;
-
-    this.horizVel *= 0.8;
-    if (Math.abs(this.horizVel) < 0.1) {
-      this.horizVel = 0;
-    }
-    if (!this.airborne) {
-      if (!this.level.solidLayer) {
-        return;
-      }
-
-      tile = this.level.solidLayer.getAt(this.x + 16, this.y + 32);
-      if (!this.isOnAnySolid(tile)) {
-        this.airborne = true;
-      }
-    }
-    if (this.airborne) {
-      this.vertVel = Math.min(16, this.vertVel + 0.4);
-    }
-  }
-
   chooseAnimation() {
-    if (this.keyPressed) {
+    if (this.directionPressed) {
       if (this.direction === "right") {
         this.setAnimation("walkRight");
       } else {
@@ -103,91 +97,13 @@ export default class Player extends Sprite {
     }
   }
 
-  checkCollisions() {
-    if (!this.level.solidLayer) {
-      return;
-    }
-
-    // Under ceiling
-    let tile = this.level.solidLayer.getAt(this.x + 16, this.y + 8);
-    if (tile && tile.ctype === "solid") {
-      if (this.vertVel < 0) {
-        this.vertVel = 0;
-        this.y = tile.y + 8;
-      }
-    }
-
-    // Right wall upper
-    tile = this.level.solidLayer.getAt(this.x + 20, this.y + 8);
-    if (tile && tile.ctype === "solid") {
-      this.horizVel = 0;
-      this.x = tile.x - 21;
-    }
-
-    // Left wall upper
-    tile = this.level.solidLayer.getAt(this.x + 12, this.y + 8);
-    if (tile && tile.ctype === "solid") {
-      this.horizVel = 0;
-      this.x = tile.x + 4;
-    }
-
-    // Right wall
-    tile = this.level.solidLayer.getAt(this.x + 20, this.y + 23);
-    if (tile && tile.ctype === "solid") {
-      this.horizVel = 0;
-      this.x = tile.x - 21;
-    }
-
-    // Left wall
-    tile = this.level.solidLayer.getAt(this.x + 12, this.y + 23);
-    if (tile && tile.ctype === "solid") {
-      this.horizVel = 0;
-      this.x = tile.x + 4;
-    }
-
-    // On ground
-    tile = this.level.solidLayer.getAt(this.x + 16, this.y + 31);
-    if (tile) {
-      if (tile.ctype === "solid") {
-        this.airborne = false;
-        this.vertVel = 0;
-        this.y = tile.y - 32;
-      } else if (this.isOnSlantRight(tile)) {
-        this.airborne = false;
-        this.vertVel = 0;
-        let x = this.x + 16 - tile.x | 0;
-        this.y = tile.y + x - 32;
-      } else if (this.isOnSlantLeft(tile)) {
-        this.airborne = false;
-        this.vertVel = 0;
-        let x = this.x + 16 - tile.x | 0;
-        this.y = tile.y + (16 - x) - 32;
-      }
-    }
-
-    // Inside wall
-    tile = this.level.solidLayer.getAt(this.x + 16, this.y + 20);
-    if (tile && tile.ctype === "solid") {
-      this.horizVel = 0;
-      this.vertVel = 0;
-    }
-
-    for (let i = 0; i < this.level.objects.length; i++) {
-      let obj = this.level.objects[i];
-
-      if (obj.isCollectible && this.closeTo(obj, 16)) {
-        this.collect(obj);
-      }
-    }
-  }
-
   closeTo(item, distance) {
     if (item === this) {
       return null;
     }
 
-    let dx = item.x + item.width / 2 - (this.x + this.width / 2);
-    let dy = item.y + item.height / 2 - (this.y + this.height / 2);
+    let dx = item.x - this.x;
+    let dy = item.y - this.y;
 
     return Math.sqrt(dx * dx + dy * dy) <= distance;
   }
@@ -237,13 +153,9 @@ export default class Player extends Sprite {
 
     for (let i = 0; i < this.toCollect.length; i++) {
       let obj = this.toCollect[i];
-      let ox = obj.x + obj.width / 2;
-      let oy = obj.y + obj.height / 2;
-      let cx = this.x + this.width / 2;
-      let cy = this.y + this.height / 2;
 
-      obj.x -= (ox - cx) * ratio;
-      obj.y -= (oy - cy) * ratio;
+      obj.x -= (obj.x - this.x) * ratio;
+      obj.y -= (obj.y - this.y) * ratio;
 
       if (this.closeTo(obj, 8)) {
         obj.destroy();
@@ -271,8 +183,10 @@ export default class Player extends Sprite {
   draw(g) {
     super.draw(g);
     if (this.engine.debugEnabled) {
+      this.engine.addTopRightDebugLine(`Airborne: ${this.airborne}`);
       g.fillStyle = "rgba(255, 64, 192, 0.33)";
-      g.fillRect(12 + this.x, 8 + this.y, 8, 24);
+      g.fillRect(this.x + this.hitbox.left, this.y + this.hitbox.up,
+                 this.hitbox.right - this.hitbox.left, this.hitbox.down - this.hitbox.up);
     }
   }
 }
