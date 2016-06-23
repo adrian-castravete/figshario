@@ -1,7 +1,15 @@
 import Figengine from "../figengine/engine";
 import FigsharioLevel from "./level";
 
+let KONAMI_CODE = ["up", "up", "down", "down", "left", "right", "left", "right", "buttonB", "buttonA", "start"];
+
 export default class Figshario extends Figengine {
+  constructor(canvas) {
+    super(canvas);
+
+    this.keyLog = [];
+  }
+
   loadLevel(fileName) {
     this.level = new FigsharioLevel(this, fileName);
   }
@@ -22,7 +30,26 @@ export default class Figshario extends Figengine {
   keyUp(key) {
     super.keyUp(key);
 
-    if (key === "flyMode") {
+    if (!this.level.player) {
+      return;
+    }
+
+    this.keyLog.push(key);
+
+    if (this.keyLog.length < 11) {
+      return;
+    }
+
+    this.keyLog = this.keyLog.splice(-11, 11);
+
+    let ok = true;
+    for (let i = 0; ok && i < 11; i++) {
+      if (this.keyLog[i] !== KONAMI_CODE[i]) {
+        ok = false;
+      }
+    }
+
+    if (ok) {
       this.level.player.flyMode = !this.level.player.flyMode;
     }
   }

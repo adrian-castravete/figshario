@@ -14,8 +14,7 @@ let KEY_TRANSLATIONS = {
   13: "start",
   17: "buttonB",
   32: "buttonA",
-  114: "debug",
-  115: "flyMode"
+  114: "debug"
 };
 
 function handleKey(evt) {
