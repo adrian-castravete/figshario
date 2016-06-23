@@ -1,5 +1,6 @@
 import Figengine from "../figengine/engine";
 import FigsharioLevel from "./level";
+import Score from "./objects/score";
 
 let KONAMI_CODE = ["up", "up", "down", "down", "left", "right", "left", "right", "buttonB", "buttonA", "start"];
 
@@ -12,6 +13,13 @@ export default class Figshario extends Figengine {
 
   loadLevel(fileName) {
     this.level = new FigsharioLevel(this, fileName);
+    this.score = new Score(this);
+  }
+
+  drawOSD(g) {
+    if (this.score) {
+      this.score.draw(g);
+    }
   }
 
   drawBackground() {

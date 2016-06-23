@@ -30,6 +30,8 @@ export default class Player extends MovingSprite {
     this.vertVel = 0;
     this.flyMode = false;
 
+    this.coinCount = 0;
+
     this.toCollect = [];
   }
 
@@ -163,6 +165,7 @@ export default class Player extends MovingSprite {
     this.toCollect.push(item);
     item.vertVel = 0;
     item.setAnimation("destroy");
+    this.coinCount += 1;
   }
 
   isOnAnySolid(tile) {

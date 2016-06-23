@@ -25,7 +25,7 @@ export default class Coin extends MovingSprite {
   checkCollisions() {
     if (!this.airborne) {
       this.horizVel = (Math.random() - 0.5) * 4;
-      this.vertVel = -2;
+      this.vertVel = -1.5;
       this.airborne = true;
     }
 

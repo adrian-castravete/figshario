@@ -13,7 +13,7 @@ export default class Figengine {
     this.cameraY = 0;
     this.cameraFollowX = 0;
     this.cameraFollowY = 0;
-    this.cameraFollowRatio = 0.95;
+    this.cameraFollowRatio = 5;
     this.keys = {
       left: false,
       up: false,
@@ -58,7 +58,7 @@ export default class Figengine {
         this.oldTick = tick;
       }
       delta = (tick - this.oldTick) / 1000.0;
-      this.moveCamera();
+      this.moveCamera(delta);
       this.level.update(tick, delta);
       this.oldTick = tick;
     }
@@ -83,11 +83,15 @@ export default class Figengine {
         }
         g.imageSmoothingEnabled = false;
         this.level.draw(g);
+        this.drawOSD(g);
         g.restore();
         this.debugScreen(g);
       }
-      window.requestAnimationFrame((newTick) => this.draw(newTick));
+      window.requestAnimationFrame(() => this.draw());
     }
+  }
+
+  drawOSD() {
   }
 
   clipExtents() {
@@ -211,13 +215,13 @@ export default class Figengine {
     return this.keys[key];
   }
 
-  moveCamera() {
+  moveCamera(delta) {
     let dx = this.cameraX - this.cameraFollowX;
     let dy = this.cameraY - this.cameraFollowY;
 
     if (Math.sqrt(dx * dx + dy * dy) > 0.001) {
-      this.cameraX = this.cameraFollowX + dx * this.cameraFollowRatio;
-      this.cameraY = this.cameraFollowY + dy * this.cameraFollowRatio;
+      this.cameraX = this.cameraX - dx * this.cameraFollowRatio * delta;
+      this.cameraY = this.cameraY - dy * this.cameraFollowRatio * delta;
     } else {
       this.cameraX = this.cameraFollowX;
       this.cameraY = this.cameraFollowY;
