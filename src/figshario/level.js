@@ -3,7 +3,8 @@ import Player from "./objects/player";
 import TiledLevel from "../tiled";
 
 let OBJ_CLASS_MAPPING = {
-  "figplayer": Player
+  "figplayer": Player,
+  "coin": Coin
 };
 
 export default class FigsharioLevel extends TiledLevel {
@@ -47,8 +48,8 @@ export default class FigsharioLevel extends TiledLevel {
 
     if (!tile || tile.ctype === "empty") {
       let c = new Coin(this.engine, this);
-      c.x = x - 4;
-      c.y = y - 4;
+      c.x = x + s.tileWidth / 2;
+      c.y = y + s.tileHeight / 2;
 
       this.objects.push(c);
     }
