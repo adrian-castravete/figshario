@@ -28,6 +28,7 @@ export default class Player extends MovingSprite {
     this.jumpStillPressed = false;
     this.horizVel = 0;
     this.vertVel = 0;
+    this.flyMode = false;
 
     this.toCollect = [];
   }
@@ -35,7 +36,11 @@ export default class Player extends MovingSprite {
   update(tick, delta) {
     super.update(tick, delta);
 
-    this.handleKeys(delta);
+    if (this.flyMode) {
+      this.handleFlyModeKeys();
+    } else {
+      this.handleKeys();
+    }
     this.chooseAnimation();
     this.handleCollecting();
 
@@ -43,7 +48,9 @@ export default class Player extends MovingSprite {
   }
 
   checkCollisions() {
-    super.checkCollisions();
+    if (!this.flyMode) {
+      super.checkCollisions();
+    }
 
     for (let i = 0, len = this.level.objects.length; i < len; i += 1) {
       let obj = this.level.objects[i];
@@ -51,6 +58,49 @@ export default class Player extends MovingSprite {
       if (obj.isCollectible && this.closeTo(obj, COLLECTION_PROXIMITY) || obj.y > 10000) {
         this.collect(obj);
       }
+    }
+  }
+
+  handleFlyModeKeys() {
+    this.directionPressed = false;
+    if (this.engine.isPressed("right")) {
+      this.direction = "right";
+      this.directionPressed = true;
+      this.horizVel += 0.8;
+      this.horizVel = Math.min(Math.max(this.horizVel, 1), 8);
+    }
+    if (this.engine.isPressed("left")) {
+      this.direction = "left";
+      this.directionPressed = true;
+      this.horizVel -= 0.8;
+      this.horizVel = Math.max(Math.min(this.horizVel, -1), -8);
+    }
+    if (this.engine.isPressed("up")) {
+      this.directionPressed = true;
+      this.vertVel -= 0.8;
+      this.vertVel = Math.max(Math.min(this.vertVel, -1), -8);
+    }
+    if (this.engine.isPressed("down")) {
+      this.directionPressed = true;
+      this.vertVel += 0.8;
+      this.vertVel = Math.min(Math.max(this.vertVel, 1), 8);
+    }
+  }
+
+  handleMovement() {
+    if (this.flyMode) {
+      this.x += this.horizVel | 0;
+      this.y += this.vertVel | 0;
+      this.horizVel *= this.friction;
+      this.vertVel *= this.friction;
+      if (Math.abs(this.horizVel) < 0.1) {
+        this.horizVel = 0;
+      }
+      if (Math.abs(this.vertVel) < 0.1) {
+        this.vertVel = 0;
+      }
+    } else {
+      super.handleMovement();
     }
   }
 

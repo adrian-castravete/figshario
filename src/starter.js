@@ -4,7 +4,7 @@ let viewport = document.getElementById("viewport");
 let figshario = new Figshario(viewport);
 
 figshario.start();
-figshario.loadLevel("assets/maps/testing.json");
+figshario.loadLevel("assets/maps/level1b.json");
 
 let KEY_TRANSLATIONS = {
   37: "left",
@@ -14,7 +14,8 @@ let KEY_TRANSLATIONS = {
   13: "start",
   17: "buttonB",
   32: "buttonA",
-  114: "debug"
+  114: "debug",
+  115: "flyMode"
 };
 
 function handleKey(evt) {

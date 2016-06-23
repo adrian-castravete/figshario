@@ -18,4 +18,12 @@ export default class Figshario extends Figengine {
     g.fillStyle = gd;
     g.fillRect(0, 0, c.width, c.height);
   }
+
+  keyUp(key) {
+    super.keyUp(key);
+
+    if (key === "flyMode") {
+      this.level.player.flyMode = !this.level.player.flyMode;
+    }
+  }
 }

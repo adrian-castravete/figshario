@@ -67,7 +67,7 @@ export default class MovingSprite extends Sprite {
 
     // Left wall
     tile = this.getSolidAt(this.x + this.hitbox.left + 1, this.y);
-    if (tile && !(tile.ctype in ["slopeRUU2", "slopeRUU1", "slopeLUU2", "slopeLUU1"])) {
+    if (tile && tile.ctype === "solid") {
       this.x = tile.x + tile.w + this.hitbox.right;
     }
 
