@@ -72,14 +72,4 @@ export default class FigsharioLevel extends TiledLevel {
       this.objects.push(obj);
     }
   }
-
-  removeObject(obj) {
-    let index;
-
-    index = this.objects.indexOf(obj);
-
-    if (index >= 0) {
-      this.objects.splice(index, 1);
-    }
-  }
 }

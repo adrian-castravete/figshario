@@ -22,6 +22,14 @@ export default class Figshario extends Figengine {
     }
   }
 
+  update(tick) {
+    super.update(tick);
+
+    if (this.score) {
+      this.score.update(tick);
+    }
+  }
+
   drawBackground() {
     let c = this.canvas;
     let g = this.context;

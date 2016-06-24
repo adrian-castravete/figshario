@@ -64,7 +64,7 @@ export default class Figengine {
     }
     if (this.running) {
       this.zoom = Math.min(this.canvas.width / this.viewportWidth, this.canvas.height / this.viewportHeight) | 0;
-      setTimeout((newTick) => this.update(newTick), 0, Date.now());
+      setTimeout((newTick) => this.update(newTick), 10, Date.now());
     }
   }
 

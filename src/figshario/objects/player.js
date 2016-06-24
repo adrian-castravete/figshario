@@ -112,18 +112,18 @@ export default class Player extends MovingSprite {
       this.direction = "right";
       this.directionPressed = true;
 
-      this.horizVel += 80 * delta;
+      this.horizVel += 40 * delta;
       this.horizVel = Math.min(Math.max(this.horizVel, 1), 4);
     } else if (this.engine.isPressed("left")) {
       this.direction = "left";
       this.directionPressed = true;
 
-      this.horizVel -= 80 * delta;
+      this.horizVel -= 40 * delta;
       this.horizVel = Math.max(Math.min(this.horizVel, -1), -4);
     }
 
     if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-      this.vertVel = -3.6;
+      this.vertVel = -5.5;
       this.airborne = true;
       this.jumpStillPressed = true;
     }
