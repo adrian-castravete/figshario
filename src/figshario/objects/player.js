@@ -37,9 +37,9 @@ export default class Player extends MovingSprite {
     super.update(tick, delta);
 
     if (this.flyMode) {
-      this.handleFlyModeKeys();
+      this.handleFlyModeKeys(delta);
     } else {
-      this.handleKeys();
+      this.handleKeys(delta);
     }
     this.chooseAnimation();
     this.handleCollecting();
@@ -47,9 +47,9 @@ export default class Player extends MovingSprite {
     this.updateCamera();
   }
 
-  checkCollisions() {
+  checkCollisions(delta) {
     if (!this.flyMode) {
-      super.checkCollisions();
+      super.checkCollisions(delta);
     }
 
     for (let i = 0, len = this.level.objects.length; i < len; i += 1) {
@@ -61,33 +61,33 @@ export default class Player extends MovingSprite {
     }
   }
 
-  handleFlyModeKeys() {
+  handleFlyModeKeys(delta) {
     this.directionPressed = false;
     if (this.engine.isPressed("right")) {
       this.direction = "right";
       this.directionPressed = true;
-      this.horizVel += 0.8;
+      this.horizVel += 80 * delta;
       this.horizVel = Math.min(Math.max(this.horizVel, 1), 8);
     }
     if (this.engine.isPressed("left")) {
       this.direction = "left";
       this.directionPressed = true;
-      this.horizVel -= 0.8;
+      this.horizVel -= 80 * delta;
       this.horizVel = Math.max(Math.min(this.horizVel, -1), -8);
     }
     if (this.engine.isPressed("up")) {
       this.directionPressed = true;
-      this.vertVel -= 0.8;
+      this.vertVel -= 80 * delta;
       this.vertVel = Math.max(Math.min(this.vertVel, -1), -8);
     }
     if (this.engine.isPressed("down")) {
       this.directionPressed = true;
-      this.vertVel += 0.8;
+      this.vertVel += 80 * delta;
       this.vertVel = Math.min(Math.max(this.vertVel, 1), 8);
     }
   }
 
-  handleMovement() {
+  handleMovement(delta) {
     if (this.flyMode) {
       this.x += this.horizVel | 0;
       this.y += this.vertVel | 0;
@@ -100,28 +100,28 @@ export default class Player extends MovingSprite {
         this.vertVel = 0;
       }
     } else {
-      super.handleMovement();
+      super.handleMovement(delta);
     }
   }
 
-  handleKeys() {
+  handleKeys(delta) {
     this.directionPressed = false;
     if (this.engine.isPressed("right")) {
       this.direction = "right";
       this.directionPressed = true;
 
-      this.horizVel += 0.8;
+      this.horizVel += 80 * delta;
       this.horizVel = Math.min(Math.max(this.horizVel, 1), 4);
     } else if (this.engine.isPressed("left")) {
       this.direction = "left";
       this.directionPressed = true;
 
-      this.horizVel -= 0.8;
+      this.horizVel -= 80 * delta;
       this.horizVel = Math.max(Math.min(this.horizVel, -1), -4);
     }
 
     if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-      this.vertVel = -8;
+      this.vertVel = -3.6;
       this.airborne = true;
       this.jumpStillPressed = true;
     }

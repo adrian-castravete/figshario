@@ -10,16 +10,17 @@ export default class MovingSprite extends Sprite {
     this.vertVel = 0;
     this.friction = 0.8;
     this.hitbox = null;
+    this.fallSpeed = 15;
   }
 
   update(tick, delta) {
     super.update(tick, delta);
 
-    this.handleMovement();
-    this.checkCollisions();
+    this.handleMovement(delta);
+    this.checkCollisions(delta);
   }
 
-  handleMovement() {
+  handleMovement(delta) {
     if (!this.level.solidLayer || !this.hitbox) {
       return;
     }
@@ -37,7 +38,7 @@ export default class MovingSprite extends Sprite {
       }
     }
     if (this.airborne) {
-      this.vertVel = Math.min(this.level.solidLayer.tileHeight, this.vertVel + 0.4);
+      this.vertVel = Math.min(this.level.solidLayer.tileHeight, this.vertVel + this.fallSpeed * delta);
     }
   }
 

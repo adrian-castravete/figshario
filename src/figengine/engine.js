@@ -57,7 +57,6 @@ export default class Figengine {
       if (this.oldTick == null) {
         this.oldTick = tick;
       }
-      // delta = 0.02;
       delta = (tick - this.oldTick) / 1000.0;
       this.moveCamera();
       this.level.update(tick, delta);
@@ -65,8 +64,7 @@ export default class Figengine {
     }
     if (this.running) {
       this.zoom = Math.min(this.canvas.width / this.viewportWidth, this.canvas.height / this.viewportHeight) | 0;
-      this.draw();
-      window.requestAnimationFrame((newTick) => this.update(newTick));
+      setTimeout((newTick) => this.update(newTick), 0, Date.now());
     }
   }
 
@@ -88,6 +86,7 @@ export default class Figengine {
         g.restore();
         this.debugScreen(g);
       }
+      window.requestAnimationFrame((newTick) => this.draw(newTick));
     }
   }
 
