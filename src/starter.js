@@ -40,6 +40,9 @@ window.addEventListener("keydown", (evt) => {
 window.addEventListener("keyup", (evt) => {
   let key;
 
+  if (evt.keyCode === 121) {
+    figshario.stop();
+  }
   key = handleKey(evt);
 
   if (key) {
