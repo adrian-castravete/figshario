@@ -1,5 +1,6 @@
 import Coin from "./objects/coin";
 import Player from "./objects/player";
+import Score from "./objects/score";
 import TiledLevel from "../tiled";
 
 let OBJ_CLASS_MAPPING = {
@@ -14,6 +15,49 @@ export default class FigsharioLevel extends TiledLevel {
     this.lastCollectibleTick = null;
     this.collectibleDelay = 0;
     this.player = null;
+
+    this.loadAssets({
+      images: {
+        figplayer: "assets/images/figplayer.gif",
+        "tiles-grassy": "assets/images/tiles-grassy.gif",
+        coin: "assets/images/coin.gif",
+        smallFont: "assets/images/small.gif",
+        scoreFont: "assets/images/score.gif"
+      }
+    }, () => {
+      this.loadAssets({
+        fonts: {
+          floaty: {
+            type: "smart",
+            image: "smallFont",
+            spaceWidth: 4,
+            charHeight: 10,
+            charSpacing: 1,
+            ranges: [
+              ["!", "!"],
+              ["0", "9"],
+              ["A", "O"],
+              ["P", "Z"],
+              ["a", "o"],
+              ["p", "z"]
+            ]
+          },
+          score: {
+            type: "normal",
+            image: "scoreFont",
+            charWidth: 16,
+            charHeight: 24,
+            charSpacing: 1,
+            ranges: [
+              ["0", "9"]
+            ]
+          }
+        }
+      }, () => {
+        this.loadFile();
+        this.score = new Score(this.engine, this);
+      });
+    });
   }
 
   update(tick, delta) {
@@ -32,6 +76,18 @@ export default class FigsharioLevel extends TiledLevel {
       this.engine.addDebugLine(`  .velocity: ${hv}×${vv}`);
     }
     this.engine.addDebugLine(`Objects: ${this.objects.length}`);
+
+    if (this.score) {
+      this.score.update(tick, delta);
+    }
+  }
+
+  draw(g) {
+    super.draw(g);
+
+    if (this.score) {
+      this.score.draw(g);
+    }
   }
 
   generateCollectible() {

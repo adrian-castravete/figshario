@@ -1,21 +1,8 @@
 import SmartFontSprite from "../../figengine/objects/smart-font-sprite";
 
-let FONT_CONFIG = {
-  spaceWidth: 4,
-  charHeight: 10,
-  ranges: [
-    ["!", "!"],
-    ["0", "9"],
-    ["A", "O"],
-    ["P", "Z"],
-    ["a", "o"],
-    ["p", "z"]
-  ]
-};
-
 export default class Floaty extends SmartFontSprite {
-  constructor(engine) {
-    super(engine, "assets/images/small.gif", FONT_CONFIG);
+  constructor(engine, level) {
+    super(engine, level, "floaty");
 
     this.textAlign = "center";
     this.textBaseline = "middle";

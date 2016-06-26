@@ -19,8 +19,8 @@ export default class Layer {
     backScreen.height = this.tileHeight * this.height;
 
     let g = backScreen.getContext("2d");
-    for (let j = 0; j < this.tiles.length; j++) {
-      for (let i = 0; i < this.tiles[j].length; i++) {
+    for (let j = 0; j < this.tiles.length; j += 1) {
+      for (let i = 0; i < this.tiles[j].length; i += 1) {
         let tile = this.tiles[j][i];
         if (tile) {
           g.drawImage(tile.img, tile.sx, tile.sy, tile.w, tile.h,
@@ -37,7 +37,7 @@ export default class Layer {
   draw(g) {
     if (!this.everythingLoaded) {
       let dorebuild = true;
-      for (let i = 0; i < this.tilesets.length; i++) {
+      for (let i = 0; i < this.tilesets.length; i += 1) {
         if (!this.tilesets[i].loaded) {
           dorebuild = false;
         }

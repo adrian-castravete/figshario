@@ -6,7 +6,7 @@ class TiledLayer extends Layer {
     let output = null;
     let topGid = null;
     if (tileIndex > 0) {
-      for (let i = 0, len = tilesets.length; i < len; i++) {
+      for (let i = 0, len = tilesets.length; i < len; i += 1) {
         let tileset = tilesets[i];
         if (tileIndex >= tileset.firstgid && (!topGid || tileset.firstgid > topGid)) {
           output = tileset;
@@ -24,7 +24,7 @@ class TiledLayer extends Layer {
     }
 
     let found = false;
-    for (let i = 0, len = this.tilesets.length; !found && i < len; i++) {
+    for (let i = 0, len = this.tilesets.length; !found && i < len; i += 1) {
       if (tileset === this.tilesets[i]) {
         found = true;
       }
@@ -43,9 +43,9 @@ class TiledLayer extends Layer {
 
     this.tilesets = [];
     let tiles = [];
-    for (let y = 0, ylen = this.height; y < ylen; y++) {
+    for (let y = 0, ylen = this.height; y < ylen; y += 1) {
       tiles.push([]);
-      for (let x = 0, xlen = this.width; x < xlen; x++) {
+      for (let x = 0, xlen = this.width; x < xlen; x += 1) {
         let tile = null;
         let tileIndex = layerData.data[y * this.width + x];
         let tileset = this.findTileset(tilesets, tileIndex);
@@ -85,7 +85,7 @@ export default class TiledLevel extends Level {
   loadLevelData(data) {
     console.debug(data);
     let tilesets = [];
-    for (let i = 0, len = data.tilesets.length; i < len; i++) {
+    for (let i = 0, len = data.tilesets.length; i < len; i += 1) {
       let tileset = data.tilesets[i];
       let imageSrc = tileset.image;
       tileset.image = new Image();
@@ -95,7 +95,7 @@ export default class TiledLevel extends Level {
     }
 
     let layers = [];
-    for (let j = 0, jlen = data.layers.length; j < jlen; j++) {
+    for (let j = 0, jlen = data.layers.length; j < jlen; j += 1) {
       let layerData = data.layers[j];
       if (layerData.type === "tilelayer") {
         let layer = new TiledLayer(this.engine, data.tilewidth, data.tileheight);
@@ -105,7 +105,7 @@ export default class TiledLevel extends Level {
         }
         layers.push(layer);
       } else if (layerData.type === "objectgroup") {
-        for (let i = 0, len = layerData.objects.length; i < len; i++) {
+        for (let i = 0, len = layerData.objects.length; i < len; i += 1) {
           this.createObject(layerData.objects[i]);
         }
       }

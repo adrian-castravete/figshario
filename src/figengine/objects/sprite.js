@@ -8,19 +8,7 @@ export default class Sprite extends FSObject {
     this.currentAnim = null;
     this.frame = 0;
     this.spriteOldTick = null;
-  }
-
-  loadSpriteSheet(sheetName) {
-    let spr = new Image();
-    spr.onload = (evt) => {
-      this.onSpriteSheetLoaded(evt);
-    };
-    spr.src = sheetName;
-
-    this.spriteSheet = spr;
-  }
-
-  onSpriteSheetLoaded() {
+    this.spriteSheet = null;
   }
 
   createAnimation(name, x, y, length, delay, callback) {
@@ -44,7 +32,7 @@ export default class Sprite extends FSObject {
     if (anim) {
       let otick = this.spriteOldTick;
       if (otick < tick - anim.delay) {
-        this.frame++;
+        this.frame += 1;
         this.resetFrame(anim);
         this.spriteOldTick = tick;
       }
@@ -64,5 +52,9 @@ export default class Sprite extends FSObject {
         }
       }
     }
+  }
+
+  loadSpriteSheet(imageName) {
+    this.spriteSheet = this.level.getImageAsset(imageName);
   }
 }

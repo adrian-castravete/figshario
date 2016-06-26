@@ -13,7 +13,6 @@ export default class Figshario extends Figengine {
 
   loadLevel(fileName) {
     this.level = new FigsharioLevel(this, fileName);
-    this.score = new Score(this);
   }
 
   drawOSD(g) {
@@ -59,7 +58,7 @@ export default class Figshario extends Figengine {
     this.keyLog = this.keyLog.splice(-11, 11);
 
     let ok = true;
-    for (let i = 0; ok && i < 11; i++) {
+    for (let i = 0; ok && i < 11; i += 1) {
       if (this.keyLog[i] !== KONAMI_CODE[i]) {
         ok = false;
       }

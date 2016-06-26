@@ -15,7 +15,7 @@ export default class Player extends MovingSprite {
       down: 12
     };
 
-    this.loadSpriteSheet("assets/images/figplayer.gif");
+    this.loadSpriteSheet("figplayer");
     this.createAnimation("lookRight", 0, 0, 2, 250);
     this.createAnimation("lookLeft", 0, 40, 2, 250);
     this.createAnimation("walkRight", 64, 0, 4, 100);
@@ -204,7 +204,7 @@ export default class Player extends MovingSprite {
     let ratio = 0.2;
     let toRemove = [];
 
-    for (let i = 0; i < this.toCollect.length; i++) {
+    for (let i = 0; i < this.toCollect.length; i += 1) {
       let obj = this.toCollect[i];
 
       obj.x -= (obj.x - this.x) * ratio;
@@ -216,7 +216,7 @@ export default class Player extends MovingSprite {
       }
     }
 
-    for (let i = 0; i < toRemove.length; i++) {
+    for (let i = 0; i < toRemove.length; i += 1) {
       this.toCollect.splice(this.toCollect.indexOf(toRemove[i]), 1);
     }
   }

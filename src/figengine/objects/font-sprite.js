@@ -1,61 +1,61 @@
 import Sprite from "./sprite";
 
 export default class FontSprite extends Sprite {
-  constructor(engine, fontFileName, fontConfig) {
-    super(engine, engine.level);
+  constructor(engine, level, fontName) {
+    super(engine, level);
 
-    this.loadSpriteSheet(fontFileName);
     this.text = "";
-    this.fontConfig = fontConfig;
     this.textAlign = "left";
     this.textBaseline = "bottom";
-    this.charWidth = 8;
-    this.charHeight = 8;
-    this.charSpacing = 8;
+
+    let fc = level.getFontAsset(fontName);
+    this.charWidth = fc.charWidth || 8;
+    this.charHeight = fc.charHeight || 8;
+    this.charSpacing = fc.charSpacing || 0;
+
+    this.fontConfig = fc;
   }
 
   draw(g) {
     let cw = this.charWidth;
     let ch = this.charHeight;
-    let cs = this.charSpacing;
+    let cs = this.charSpacing + cw;
 
-    for (let i = 0, len = this.text.length; i < len; i += 1) {
+    let y = this.y - ch;
+    if (this.textBaseline === "middle") {
+      y += ch / 2;
+    } else if (this.textBaseline === "top") {
+      y += ch;
+    }
+    y = y | 0;
+
+    let len = this.text.length;
+    let ox = this.x;
+    if (this.textAlign === "center") {
+      ox -= len * cs / 2 | 0;
+    } else if (this.textAlign === "right") {
+      ox -= len * cs | 0;
+    }
+
+    let ranges = this.fontConfig.ranges;
+    for (let i = 0; i < len; i += 1) {
       let c = this.text[i].charCodeAt();
 
-      for (let j = 0, rlen = this.fontConfig.length; j < rlen; j += 1) {
-        let cf = this.fontConfig[j];
-        let x = this.x;
-        let y = this.y - ch;
-        if (this.textBaseline === "middle") {
-          y += ch / 2;
-        } else if (this.textBaseline === "top") {
-          y += ch;
-        }
-        if (this.textAlign === "center") {
-          x -= len * cs / 2 | 0;
-        } else if (this.textAlign === "right") {
-          x -= len * cs | 0;
-        }
+      for (let j = 0, rlen = ranges.length; j < rlen; j += 1) {
+        let cf = ranges[j];
 
-        x += i * cs;
-        y = y | 0;
+        let x = ox + i * cs | 0;
 
         let sx = 0;
         let sy = 0;
 
-        if (typeof cf.i === "string") {
-          if (c === cf.i.charCodeAt()) {
-            sx = cf.x * cw;
-            sy = cf.y * ch;
-          }
-        } else {
-          if (c >= cf.i[0].charCodeAt() && c <= cf.i[1].charCodeAt()) {
-            sx = (cf.x + c - cf.i[0].charCodeAt()) * cw;
-            sy = cf.y * ch;
-          }
+        if (c >= cf[0].charCodeAt() && c <= cf[1].charCodeAt()) {
+          sx = (c - cf[0].charCodeAt()) * cw;
+          sy = j * ch;
         }
 
-        g.drawImage(this.spriteSheet, sx, sy, cw, ch, x, y, cw, ch);
+        g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch,
+                    x, y, cw, ch);
       }
     }
   }

@@ -19,7 +19,7 @@ export default class Coin extends MovingSprite {
 
     this.width = 8;
     this.height = 8;
-    this.loadSpriteSheet("assets/images/coin.gif");
+    this.loadSpriteSheet("coin");
     this.createAnimation("create", 0, 8, 8, 100, "default");
     this.createAnimation("default", 0, 0, 4, 100);
     this.createAnimation("destroy", 32, 0, 4, 100);
@@ -46,7 +46,7 @@ export default class Coin extends MovingSprite {
   // }
 
   destroy() {
-    let floaty = new Floaty(this.engine);
+    let floaty = new Floaty(this.engine, this.level);
     floaty.x = this.x;
     floaty.y = this.y;
     floaty.text = WORDS[Math.random() * WORDS.length | 0];
