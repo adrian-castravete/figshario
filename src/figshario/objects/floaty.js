@@ -1,30 +1,24 @@
-import FontSprite from "../../figengine/objects/font-sprite";
+import SmartFontSprite from "../../figengine/objects/smart-font-sprite";
 
-let FONT_CONFIG = [
-  {
-    i: " ",
-    x: 0,
-    y: 0
-  }, {
-    i: ["a", "z"],
-    x: 1,
-    y: 0
-  }, {
-    i: ["0", "9"],
-    x: 0,
-    y: 1
-  }
-];
+let FONT_CONFIG = {
+  spaceWidth: 4,
+  charHeight: 10,
+  ranges: [
+    ["!", "!"],
+    ["0", "9"],
+    ["A", "O"],
+    ["P", "Z"],
+    ["a", "o"],
+    ["p", "z"]
+  ]
+};
 
-export default class Floaty extends FontSprite {
+export default class Floaty extends SmartFontSprite {
   constructor(engine) {
-    super(engine, "assets/images/words.gif", FONT_CONFIG);
+    super(engine, "assets/images/small.gif", FONT_CONFIG);
 
     this.textAlign = "center";
     this.textBaseline = "middle";
-    this.charWidth = 6;
-    this.charHeight = 6;
-    this.charSpacing = 6;
 
     this.climbed = 0;
     this.blinking = false;

@@ -12,9 +12,15 @@ export default class Sprite extends FSObject {
 
   loadSpriteSheet(sheetName) {
     let spr = new Image();
+    spr.onload = (evt) => {
+      this.onSpriteSheetLoaded(evt);
+    };
     spr.src = sheetName;
 
     this.spriteSheet = spr;
+  }
+
+  onSpriteSheetLoaded() {
   }
 
   createAnimation(name, x, y, length, delay, callback) {
