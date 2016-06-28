@@ -8,7 +8,7 @@ export default class MovingSprite extends Sprite {
     this.solidBounceFactor = 0;
     this.horizVel = 0;
     this.vertVel = 0;
-    this.friction = 0.8;
+    this.friction = 0.9;
     this.hitbox = null;
     this.fallSpeed = 15;
   }

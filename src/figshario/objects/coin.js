@@ -1,3 +1,4 @@
+import Sprite from "../../figengine/objects/sprite";
 import MovingSprite from "../../figshario/objects/moving-sprite";
 import Floaty from "./floaty";
 
@@ -13,39 +14,24 @@ let WORDS = `Good!, Nice!, Awesome!, Marvelous!, Superb!, Fantastic!, OK!, Bravo
     Woot!, W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
 `.trim().split(/\s*,\s*/);
 
-export default class Coin extends MovingSprite {
-  constructor(engine, level) {
-    super(engine, level);
+function makeCoinLike(obj) {
+  obj.width = 8;
+  obj.height = 8;
+  obj.loadSpriteSheet("coin");
+  obj.createAnimation("create", 0, 8, 8, 100, "default");
+  obj.createAnimation("default", 0, 0, 4, 100);
+  obj.createAnimation("destroy", 32, 0, 4, 100);
+  obj.setAnimation("create");
 
-    this.width = 8;
-    this.height = 8;
-    this.loadSpriteSheet("coin");
-    this.createAnimation("create", 0, 8, 8, 100, "default");
-    this.createAnimation("default", 0, 0, 4, 100);
-    this.createAnimation("destroy", 32, 0, 4, 100);
-    this.setAnimation("create");
+  obj.hitbox = {
+    left: -2,
+    up: -2,
+    right: 2,
+    down: 2
+  };
 
-    this.hitbox = {
-      left: -2,
-      up: -2,
-      right: 2,
-      down: 2
-    };
-
-    this.isCollectible = true;
-  }
-
-  // checkCollisions() {
-  //   if (!this.airborne) {
-  //     this.horizVel = (Math.random() - 0.5) * 4;
-  //     this.vertVel = -1.5;
-  //     this.airborne = true;
-  //   }
-
-  //   super.checkCollisions();
-  // }
-
-  destroy() {
+  obj.isCollectible = true;
+  obj.destroy = function() {
     let floaty = new Floaty(this.engine, this.level);
     floaty.x = this.x;
     floaty.y = this.y;
@@ -53,5 +39,21 @@ export default class Coin extends MovingSprite {
 
     this.level.addObject(floaty);
     this.level.removeObject(this);
+  };
+}
+
+export class StaticCoin extends Sprite {
+  constructor(engine, level) {
+    super(engine, level);
+
+    makeCoinLike(this);
+  }
+}
+
+export default class Coin extends MovingSprite {
+  constructor(engine, level) {
+    super(engine, level);
+
+    makeCoinLike(this);
   }
 }

@@ -29,7 +29,6 @@ export default class Player extends MovingSprite {
     this.horizVel = 0;
     this.vertVel = 0;
     this.flyMode = false;
-
     this.coinCount = 0;
 
     this.toCollect = [];
@@ -93,8 +92,6 @@ export default class Player extends MovingSprite {
     if (this.flyMode) {
       this.x += this.horizVel | 0;
       this.y += this.vertVel | 0;
-      this.horizVel *= this.friction;
-      this.vertVel *= this.friction;
       if (Math.abs(this.horizVel) < 0.1) {
         this.horizVel = 0;
       }
@@ -112,14 +109,14 @@ export default class Player extends MovingSprite {
       this.direction = "right";
       this.directionPressed = true;
 
-      this.horizVel += 40 * delta;
-      this.horizVel = Math.min(Math.max(this.horizVel, 1), 4);
+      this.horizVel += 20 * delta;
+      this.horizVel = Math.min(this.horizVel, 8);
     } else if (this.engine.isPressed("left")) {
       this.direction = "left";
       this.directionPressed = true;
 
-      this.horizVel -= 40 * delta;
-      this.horizVel = Math.max(Math.min(this.horizVel, -1), -4);
+      this.horizVel -= 20 * delta;
+      this.horizVel = Math.max(this.horizVel, -8);
     }
 
     if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {

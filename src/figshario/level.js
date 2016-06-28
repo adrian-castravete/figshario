@@ -1,11 +1,12 @@
-import Coin from "./objects/coin";
+import Coin, { StaticCoin } from "./objects/coin";
 import Player from "./objects/player";
 import Score from "./objects/score";
 import TiledLevel from "../tiled";
 
 let OBJ_CLASS_MAPPING = {
   "figplayer": Player,
-  "coin": Coin
+  "coin": Coin,
+  "scoin": StaticCoin
 };
 
 export default class FigsharioLevel extends TiledLevel {
