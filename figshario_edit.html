@@ -6,10 +6,11 @@
     <meta author="Adrian Castravete" />
   </head>
   <body style="margin:0;padding:0;overflow:hidden;">
-    <canvas id="viewport">
-      Your browser seems to not support the
-      <b>HTML 5</b> <code>&lt;canvas&gt;</code> tag.
-    </canvas>
-    <script src="js/figshario.js"></script>
+    <script src="figshario_edit.js"></script>
+    <script>
+     let game = new fkfig.Editor();
+     game.start("newlevel.json");
+     this.gameStop = game.stop;
+    </script>
   </body>
 </html>

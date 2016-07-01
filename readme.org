@@ -9,23 +9,4 @@ This is a Super Mario clone or better said a platformer.
 Just play with the *cursor keys* and jump with *space*.
 
 * Contributing
-The project is licensed with the *MIT* licence and uses *npm*.
-
-** Dependencies
-To install the necessary *node* dependencies do:
-
-~npm install~
-
-** Gulp commands
-After installing the dependencies there are two *gulp* commands made available:
-
-~gulp build
- gulp watch~
-
-The first just builds the bundle _js/figshario.js_ file while the second
-watches for any changes in the _*.js_ files from _src/_ and launches the
-*build* step.
-
-* Story
-To keep track of what I want to implement and what I want to achieve, I have
-created the [[file:./doc/story.org][story]] document.
+The project is licensed with the *MIT* licence.
