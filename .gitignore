@@ -1,3 +1,8 @@
 *.sw[po]
 node_modules/
-js/
+src/
+figshario/
+gulpfile.js
+doc/
+Makefile
+package.json
