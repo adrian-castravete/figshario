@@ -24,6 +24,10 @@ export default class FigsharioLevel extends TiledLevel {
         coin: "assets/images/coin.gif",
         smallFont: "assets/images/small.gif",
         scoreFont: "assets/images/score.gif"
+      },
+      sounds: {
+        "coin-ching": "assets/sounds/coin.wav",
+        "boing": "assets/sounds/boing.wav"
       }
     }, () => {
       this.loadAssets({

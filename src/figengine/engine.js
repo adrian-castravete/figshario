@@ -223,4 +223,13 @@ export default class Figengine {
       this.cameraY = this.cameraFollowY;
     }
   }
+
+  playSound(sound) {
+    if (sound.ended || !sound.playedAtLeastOnce) {
+      sound.play();
+      sound.playedAtLeastOnce = true;
+    } else {
+      sound.currentTime = 0;
+    }
+  }
 }

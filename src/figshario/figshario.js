@@ -1,6 +1,5 @@
 import Figengine from "../figengine/engine";
 import FigsharioLevel from "./level";
-import Score from "./objects/score";
 
 let KONAMI_CODE = ["up", "up", "down", "down", "left", "right", "left", "right", "buttonB", "buttonA", "start"];
 

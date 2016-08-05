@@ -30,6 +30,7 @@ export default class Player extends MovingSprite {
     this.vertVel = 0;
     this.flyMode = false;
     this.coinCount = 0;
+    this.jumpSound = this.level.getSoundAsset("boing");
 
     this.toCollect = [];
   }
@@ -123,6 +124,7 @@ export default class Player extends MovingSprite {
       this.vertVel = -5.5;
       this.airborne = true;
       this.jumpStillPressed = true;
+      this.engine.playSound(this.jumpSound);
     }
 
     if (!this.engine.isPressed("buttonA")) {

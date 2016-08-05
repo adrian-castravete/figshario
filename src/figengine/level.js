@@ -185,6 +185,9 @@ export default class Level extends Loader {
     if (aCfg.fonts) {
       this._loadFontAssets(aCfg.fonts);
     }
+    if (aCfg.sounds) {
+      this._loadSoundAssets(aCfg.sounds);
+    }
   }
 
   getImageAsset(assetName) {
@@ -205,6 +208,16 @@ export default class Level extends Loader {
     }
 
     return fonts[assetName].resource;
+  }
+
+  getSoundAsset(assetName) {
+    let sounds = this.assets.sounds;
+
+    if (!sounds) {
+      return null;
+    }
+
+    return sounds[assetName].resource;
   }
 
   loadFile(fileName) {
@@ -254,5 +267,30 @@ export default class Level extends Loader {
     });
 
     this.assets.fonts = fonts;
+  }
+
+  _loadSoundAssets(assetConfig, assetCallback) {
+    let sounds = {};
+    let cbh = (key, callback) => {
+      return (evt) => {
+        this.assets.sounds[key].loaded = true;
+        if (callback) {
+          callback(key, evt);
+        }
+      };
+    };
+
+    Object.keys(assetConfig).forEach((key) => {
+      let fileName = assetConfig[key];
+      let snd = new Audio();
+      snd.onload = cbh(key, assetCallback);
+      snd.src = fileName;
+      sounds[key] = {
+        resource: snd,
+        loaded: false
+      };
+    });
+
+    this.assets.sounds = sounds;
   }
 }

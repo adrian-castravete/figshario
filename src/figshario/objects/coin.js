@@ -37,6 +37,9 @@ function makeCoinLike(obj) {
     floaty.y = this.y;
     floaty.text = WORDS[Math.random() * WORDS.length | 0];
 
+    let sound = this.level.getSoundAsset("coin-ching");
+    this.engine.playSound(sound);
+
     this.level.addObject(floaty);
     this.level.removeObject(this);
   };
