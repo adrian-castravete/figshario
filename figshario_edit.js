@@ -4,7 +4,10 @@
       this._keyDown = this._keyDown.bind(this);
       this._keyUp = this._keyUp.bind(this);
 
-      this.buttons = {start: false, select: false, left: false,
+      this.buttons = {
+        start: false,
+        select: false,
+        left: false,
         up: false,
         right: false,
         down: false,
@@ -96,20 +99,143 @@
   class Stage {
     constructor(engine) {
       this.engine = engine;
+
+      this.tileWidth = 32;
+      this.tileHeight = 32;
+
+      this.tiles = null;
+
+      this._cbLoadAssets = null;
+      this._imageAssets = {};
+    }
+
+    loadAssets(config, callback) {
+      if (!config) {
+        return;
+      }
+
+      this._cbLoadAssets = callback;
+      if (config.images) {
+        Object.keys(config.images).forEach((key) => {
+          let path = config.images[key];
+          let asset = {
+            image: null,
+            path,
+            loaded: false
+          };
+          asset.image = this._loadImageAsset(path, asset);
+          this._imageAssets[key] = asset;
+        });
+      }
+    }
+
+    loadTileSet(assetName) {
+      let asset = this._imageAssets[assetName];
+
+      if (!asset && console && console.warn) {
+        console.warn(`Asset "${assetName}\ not found!`);
+      }
+
+      // WIP
     }
 
     update(/* tick */) {
+      let [done, total] = this._calculateAssetTotals();
+
+      if (done == total) {
+        if (this._cbLoadAssets) {
+          this._cbLoadAssets();
+        }
+      }
+
+      if (!this.tiles) {
+        this._tiles = this._generateDefaultTiles();
+      }
     }
 
     draw(/* g */) {
+    }
+
+    _loadImageAsset(path, asset) {
+      let img = new Image();
+
+      img.onload = () => {
+        asset.loaded = true;
+      };
+      img.src = path;
+
+      return img;
+    }
+
+    _calculateAssetTotals() {
+      let total = 0;
+      let done = 0;
+
+      let [cd, ct] = this._individualAssetTotals(this._imageAssets);
+      done += cd;
+      total += ct;
+
+      return [done, total];
+    }
+
+    _individualAssetTotals(assets) {
+      let total = 0;
+      let done = 0;
+
+      Object.keys(assets).forEach((key) => {
+        let asset = assets[key];
+        if (asset.loaded) {
+          done += 1;
+        }
+        total += 1;
+      });
+
+      return [done, total];
+    }
+
+    _generateDefaultTiles() {
+      let tiles = [];
+
+      for (let j = 0; j < this.tileHeight; j += 1) {
+        tiles.push([]);
+        for (let i = 0; i < this.tileWidth; i += 1) {
+          tiles[j].push({
+            id: 0
+          });
+        }
+      }
+
+      return tiles;
     }
   }
 
-  class Bootup extends Stage {
-    update(/* tick */) {
+  class Loader extends Stage {
+    constructor(engine) {
+      super(engine);
+
+      this.loadAssets({
+        images: {
+          progress: "assets/images/progress.gif"
+        }
+      }, (evt) => {
+        this._onReadyToLoad(evt);
+      });
     }
 
-    draw(/* g */) {
+    onReadyToLoad() {
+    }
+
+    update(tick) {
+      super.update(tick);
+    }
+
+    draw(g) {
+      super.draw(g);
+    }
+
+    _onReadyToLoad(/* evt */) {
+      this.loadTileSet("progress");
+      this.onReadyToLoad();
     }
   }
 
@@ -134,7 +260,7 @@
       this.height = height;
       this.zoom = zoom;
       this.running = false;
-      this.stage = new Bootup(this);
+      this.stage = new Loader(this);
 
       this.keys = new KeyHandler();
 
@@ -213,8 +339,35 @@
   class Editor extends Engine {
   }
 
+  class FigsharioMainMenu extends Loader {
+    constructor(engine) {
+      super(engine);
+    }
+
+    onReadyToLoad() {
+      this.loadAssets({
+        progress: "assets/images/progress.gif"
+      }, () => {
+        this.onLoad();
+      });
+    }
+
+    onLoad() {
+      this.engine.stage = new FigsharioMainMenu(this.engine);
+    }
+  }
+
+  class FigsharioEditor extends Editor {
+    constructor() {
+      super();
+
+      this.stage = new FigsharioMainMenu(this);
+    }
+  }
+
   this.fkfig = {
     Engine,
-    Editor
+    Editor,
+    FigsharioEditor
   };
 }).call(this);

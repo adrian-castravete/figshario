@@ -8,9 +8,11 @@
   <body style="margin:0;padding:0;overflow:hidden;">
     <script src="figshario_edit.js"></script>
     <script>
-     let game = new fkfig.Editor();
+     let game = new fkfig.FigsharioEditor();
      game.start("newlevel.json");
-     this.gameStop = game.stop;
+     this.gameStop = () => {
+         game.stop();
+     };
     </script>
   </body>
 </html>
