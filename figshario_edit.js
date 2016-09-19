@@ -1,5 +1,5 @@
 (function() {
-  class KeyHandler {
+  class KeyHandler { // {{{
     constructor() {
       this._keyDown = this._keyDown.bind(this);
       this._keyUp = this._keyUp.bind(this);
@@ -94,19 +94,89 @@
         this.keyUp(key);
       }
     }
-  }
+  } // }}}
 
-  class Stage {
+  class Asset { // {{{
+    constructor(path) {
+      this.path = path;
+      this.loaded = false;
+    }
+
+    load() {
+      if (console && console.warn) {
+        console.warn(`Generic asset for ${this.path}`);
+      }
+      this.loaded = true;
+    }
+  } // }}}
+
+  class ImageAsset extends Asset { // {{{
+    constructor(path) {
+      super(path);
+      this.image = null;
+    }
+
+    load() {
+      this.image = new Image();
+      this.image.onload = () => {
+        this.loaded = true;
+      };
+      this.image.src = this.path;
+    }
+  } // }}}
+
+  class CHRAsset extends Asset { // {{{
+    constructor(path, cellsX, cellsY) {
+      super(path);
+
+      this.cellsX = cellsX;
+      this.cellsY = cellsY;
+      this.image = null;
+    }
+
+    load() {
+      let c = document.createElement("canvas");
+      c.width = this.cellsX * 8;
+      c.height = this.cellsY * 8;
+
+      this.image = c;
+    }
+  } // }}}
+
+  class ProgressImageAsset extends CHRAsset { // {{{
+    constructor() {
+      super("assets/images/progress.chr");
+      this.load();
+    }
+
+    load() {
+      if (ProgressImageAsset._progressImg) {
+        this.image = ProgressImageAsset._progressImg;
+        this.loaded = true;
+      } else {
+        super.load();
+        ProgressImageAsset._progressImg = this.image;
+      }
+    }
+  } // }}}
+
+  class Stage { // {{{
     constructor(engine) {
       this.engine = engine;
 
-      this.tileWidth = 32;
-      this.tileHeight = 32;
-
       this.tiles = null;
+      this.tilesX = 32;
+      this.tilesY = 32;
+      this.offsetX = 0;
+      this.offsetY = 0;
+      this.tileSet = null;
 
+      this._isLoading = false;
+      this._wasLoading = false;
       this._cbLoadAssets = null;
-      this._imageAssets = {};
+      this._imageAssets = {
+        progress: new ProgressImageAsset()
+      };
     }
 
     loadAssets(config, callback) {
@@ -114,16 +184,12 @@
         return;
       }
 
+      this._isLoading = true;
       this._cbLoadAssets = callback;
       if (config.images) {
         Object.keys(config.images).forEach((key) => {
-          let path = config.images[key];
-          let asset = {
-            image: null,
-            path,
-            loaded: false
-          };
-          asset.image = this._loadImageAsset(path, asset);
+          let asset = new ImageAsset(config.images[key]);
+          asset.load();
           this._imageAssets[key] = asset;
         });
       }
@@ -133,23 +199,49 @@
       let asset = this._imageAssets[assetName];
 
       if (!asset && console && console.warn) {
-        console.warn(`Asset "${assetName}\ not found!`);
+        console.warn(`Asset "${assetName}" not found!`);
       }
 
-      // WIP
+      this._compileTileSet(asset);
     }
 
-    update(/* tick */) {
-      let [done, total] = this._calculateAssetTotals();
+    getTile(x, y) {
+      return this.tiles[y * this.tilesY + x];
+    }
 
-      if (done == total) {
-        if (this._cbLoadAssets) {
-          this._cbLoadAssets();
+    setTile(x, y, value) {
+      this.tiles[y * this.tilesY + x] = value;
+    }
+
+    repaint() {
+    }
+
+    update(tick) {
+      if (this._isLoading) {
+        if (!this._wasLoading) {
+          this._firstPaintLoading();
         }
+        this.updateLoading(tick);
+      } else if (this._wasLoading) {
+        this.repaint();
       }
 
       if (!this.tiles) {
         this._tiles = this._generateDefaultTiles();
+      }
+      this._wasLoading = this._isLoading;
+    }
+
+    updateLoading(/* tick */) {
+      let [done, total] = this._calculateAssetTotals();
+
+      if (done == total) {
+        if (this._cbLoadAssets) {
+          this._isLoading = false;
+          this._cbLoadAssets();
+        }
+      } else {
+        // pass
       }
     }
 
@@ -194,52 +286,43 @@
     }
 
     _generateDefaultTiles() {
-      let tiles = [];
+      let p = this.tilesX * this.tilesY;
+      let tiles = new Uint16Array(p);
 
-      for (let j = 0; j < this.tileHeight; j += 1) {
-        tiles.push([]);
-        for (let i = 0; i < this.tileWidth; i += 1) {
-          tiles[j].push({
-            id: 0
-          });
-        }
+      for (let i = 0; i < p; i += 1) {
+        tiles[i] = 0;
       }
 
       return tiles;
     }
-  }
 
-  class Loader extends Stage {
-    constructor(engine) {
-      super(engine);
-
-      this.loadAssets({
-        images: {
-          progress: "assets/images/progress.gif"
-        }
-      }, (evt) => {
-        this._onReadyToLoad(evt);
-      });
-    }
-
-    onReadyToLoad() {
-    }
-
-    update(tick) {
-      super.update(tick);
-    }
-
-    draw(g) {
-      super.draw(g);
-    }
-
-    _onReadyToLoad(/* evt */) {
+    _firstPaintLoading() {
       this.loadTileSet("progress");
-      this.onReadyToLoad();
-    }
-  }
+      this.setPalette(0, 0b0111111001000000, 0b0100101111100000, 0b0010011011000000, 0b0001001001000000);
+      this.setPalette(1, 0b0111111001000000, 0b0100000010100000, 0b0110100010000000, 0b0111110001101010);
+      this.setPalette(2, 0b0000000000000000, 0b0001110101010000, 0b0100111010010111, 0b0111111111111111);
 
-  class Engine {
+      this.offsetX = 0;
+      this.offsetY = 0;
+      for (let j = 0; j < 18; j += 1) {
+        for (let i = 0; i < 20; i += 1) {
+          this.setTile(i, j, 0);
+        }
+      }
+
+      this.setTile(8, 7, 8 + 2 << 10);
+      this.setTile(9, 7, 9 + 2 << 10);
+      this.setTile(10, 7, 10 + 2 << 10);
+      this.setTile(11, 7, 11 + 2 << 10);
+      for (let i = 2; i < 18; i += 1) {
+        this.setTile(i, 8, 5 + 1 << 10);
+      }
+      this.setTile(1, 8, 4 + 1 << 10);
+      this.setTile(18, 8, 6 + 1 << 10);
+    }
+  } // }}}
+
+  class Engine { // {{{
     constructor(canvas) {
       this.resize = this.resize.bind(this);
 
@@ -260,8 +343,8 @@
       this.height = height;
       this.zoom = zoom;
       this.running = false;
-      this.stage = new Loader(this);
 
+      this.stage = null;
       this.keys = new KeyHandler();
 
       this.resize();
@@ -334,40 +417,14 @@
       this.running = false;
       this.detachEvents();
     }
-  }
+  } // }}}
 
-  class Editor extends Engine {
-  }
-
-  class FigsharioMainMenu extends Loader {
-    constructor(engine) {
-      super(engine);
-    }
-
-    onReadyToLoad() {
-      this.loadAssets({
-        progress: "assets/images/progress.gif"
-      }, () => {
-        this.onLoad();
-      });
-    }
-
-    onLoad() {
-      this.engine.stage = new FigsharioMainMenu(this.engine);
-    }
-  }
-
-  class FigsharioEditor extends Editor {
-    constructor() {
-      super();
-
-      this.stage = new FigsharioMainMenu(this);
-    }
-  }
+  class Editor extends Engine { // {{{
+  } // }}}
 
   this.fkfig = {
     Engine,
     Editor,
-    FigsharioEditor
+    Stage
   };
 }).call(this);

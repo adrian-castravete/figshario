@@ -20,8 +20,8 @@ function extractChr()
 end
 
 function sanityCheck()
-  if width ~= 128 or height ~= 512 then
-    error("Unexpected picture size. Must be 128x512 and received (" .. width .. "x" .. height .. ")")
+  if width % 8 ~= 0 or height % 8 ~= 0 then
+    error("Unexpected picture size. Must have coordinates divisible by 8 and received (" .. width .. "x" .. height .. ")")
   end
 end
 
@@ -37,8 +37,9 @@ function manageTile(out, x, y)
     tile[#tile + 1] = pixels
   end
 
-  writeFirstPattern(out, tile)
-  writeSecondPattern(out, tile)
+  -- writeFirstPattern(out, tile)
+  -- writeSecondPattern(out, tile)
+  writeMixedPattern(out, tile)
 end
 
 function writeFirstPattern(out, tile)
@@ -58,6 +59,17 @@ function writeSecondPattern(out, tile)
       accum = accum * 2 + math.floor(tile[j][i] / 2)
     end
     out:write(string.char(accum))
+  end
+end
+
+function writeMixedPattern(out, tile)
+  for j = 1, 8 do
+    local accum = 0
+    for i = 1, 8 do
+      accum = accum * 4 + tile[j][i] % 4
+    end
+    out:write(string.char(accum % 256))
+    out:write(string.char(accum / 256))
   end
 end
 
