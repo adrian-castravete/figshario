@@ -106,7 +106,6 @@
 
       this.videoRam = new Uint8Array(16 * 1024);
       this.tileRam = null;
-      this.tileStatus = null;
       this.palettesBackground = new Uint16Array(32);
       this.palettesSprites = new Uint16Array(32);
     }
@@ -114,11 +113,15 @@
     resetTileRam() {
       let total = this.tilesX * this.tilesY;
       let tileRam = new Uint16Array(total);
-      let tileStatus = new Uint8Array(total);
 
       for (let i = 0; i < total; i += 1) {
+        // fhvpppnnnnnnnnnn
+        // f -> foreground / background
+        // h -> horizontal flip
+        // v -> vertical flip
+        // p -> palette number
+        // n -> position in videoRam
         tileRam[i] = 0;
-        tileStatus[i] = 0x80;
       }
 
       this.tileRam = tileRam;
@@ -182,6 +185,66 @@
       cvs.width = window.innerWidth;
       cvs.height = window.innerHeight;
     }
+
+    attachEvents() {
+      window.addEventListener("resize", this.resize);
+      this.keys.attachEvents();
+    }
+
+    detachEvents() {
+      window.removeEventListener("resize", this.resize);
+      this.keys.detachEvents();
+    }
+
+    loadLevel(levelFileName) {
+      self.levelFileName = levelFileName;
+    }
+
+    start(levelFileName) {
+      this.loadLevel(levelFileName);
+      this.attachEvents();
+      this.running = true;
+      this.update(0);
+      this.draw();
+    }
+
+    stop() {
+      this.running = false;
+      this.detachEvents();
+    }
+
+    update(tick) {
+      if (this.running) {
+        window.setTimeout((newTick) => {
+          this.update(newTick);
+        }, 10, Date.now());
+      }
+    }
+
+    draw() {
+      if (this.running) {
+        let cvs = this.canvas;
+        let g = this.context;
+        g.fillStyle = "#000000";
+        g.fillRect(0, 0, cvs.width, cvs.height);
+        g.save();
+        g.translate((cvs.width - this.width * this.zoom) / 2, (cvs.height - this.height * this.zoom) / 2);
+        g.scale(this.zoom, this.zoom);
+
+
+        g.restore();
+      }
+      if (this.running) {
+        window.requestAnimationFrame(() => {
+          this.draw();
+        });
+      }
+    }
+  }  // }}}
+  // }}}
+
+  // Debugger {{{
+  class Debugger {  // {{{
   }  // }}}
   // }}}
 
@@ -191,6 +254,8 @@
   }  // }}}
   // }}}
 
+  fkfig.Engine = Engine;
   fkfig.Editor = Editor;
+  fkfig.Debugger = Debugger;
   this.fkfig = fkfig;
 }).call(this);
