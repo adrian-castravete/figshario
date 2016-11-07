@@ -26,7 +26,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       this.vertVel = 0;
       this.friction = 0.9;
       this.hitbox = null;
-      this.fallSpeed = 15;
+      this.fallSpeed = 5;
     }
 
     update(tick, delta) {
@@ -211,20 +211,20 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     constructor(engine, level) {
       super(engine, level);
 
-      this.width = 32;
-      this.height = 40;
+      this.width = 16;
+      this.height = 16;
       this.hitbox = {
-        left: -4,
-        up: -12,
-        right: 4,
-        down: 12
+        left: -3,
+        up: -7,
+        right: 3,
+        down: 7
       };
 
       this.loadSpriteSheet("figplayer");
-      this.createAnimation("lookRight", 0, 0, 2, 250);
-      this.createAnimation("lookLeft", 0, 40, 2, 250);
-      this.createAnimation("walkRight", 64, 0, 4, 100);
-      this.createAnimation("walkLeft", 64, 40, 4, 100);
+      this.createAnimation("lookRight", 0, 32, 2, 250);
+      this.createAnimation("lookLeft", 0, 48, 2, 250);
+      this.createAnimation("walkRight", 0, 0, 8, 100);
+      this.createAnimation("walkLeft", 0, 16, 8, 100);
       this.setAnimation("lookRight");
 
       this.direction = "right";
@@ -246,7 +246,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       if (this.flyMode) {
         this.handleFlyModeKeys(delta);
       } else {
-        this.handleKeys(delta);
+        this.handleKeys(tick, delta);
       }
       this.chooseAnimation();
       this.handleCollecting();
@@ -262,7 +262,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       for (let i = 0, len = this.level.objects.length; i < len; i += 1) {
         let obj = this.level.objects[i];
 
-        if (obj.isCollectible && this.closeTo(obj, COLLECTION_PROXIMITY) || obj.y > 10000) {
+        if (obj.isCollectible && (this.closeTo(obj, COLLECTION_PROXIMITY) || obj.y > 10000)) {
           this.collect(obj);
         }
       }
@@ -273,24 +273,20 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       if (this.engine.isPressed("right")) {
         this.direction = "right";
         this.directionPressed = true;
-        this.horizVel += 80 * delta;
-        this.horizVel = Math.min(Math.max(this.horizVel, 1), 8);
+        this.horizVel = 8 * delta;
       }
       if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
-        this.horizVel -= 80 * delta;
-        this.horizVel = Math.max(Math.min(this.horizVel, -1), -8);
+        this.horizVel = 8 * delta;
       }
       if (this.engine.isPressed("up")) {
         this.directionPressed = true;
-        this.vertVel -= 80 * delta;
-        this.vertVel = Math.max(Math.min(this.vertVel, -1), -8);
+        this.vertVel = 8 * delta;
       }
       if (this.engine.isPressed("down")) {
         this.directionPressed = true;
-        this.vertVel += 80 * delta;
-        this.vertVel = Math.min(Math.max(this.vertVel, 1), 8);
+        this.vertVel = 8 * delta;
       }
     }
 
@@ -309,24 +305,24 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       }
     }
 
-    handleKeys(delta) {
+    handleKeys(tick) {
       this.directionPressed = false;
       if (this.engine.isPressed("right")) {
         this.direction = "right";
         this.directionPressed = true;
 
-        this.horizVel += 20 * delta;
-        this.horizVel = Math.min(this.horizVel, 8);
+        let d = tick - this.engine.keys.right;
+        this.horizVel = Math.min(Math.max((d / 100) | 0, 2), 1);
       } else if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
 
-        this.horizVel -= 20 * delta;
-        this.horizVel = Math.max(this.horizVel, -8);
+        let d = tick - this.engine.keys.left;
+        this.horizVel = Math.max(Math.min(-(d / 100) | 0, -2), -1);
       }
 
       if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-        this.vertVel = -5.5;
+        this.vertVel = -2;
         this.airborne = true;
         this.jumpStillPressed = true;
         this.engine.playSound(this.jumpSound);
@@ -434,7 +430,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         offset = -40;
       }
 
-      this.engine.setCamera(this.x + this.width / 2 + offset, this.y + this.height / 2);
+      this.engine.setCamera(this.x + this.width / 2 + offset, this.y);
     }
 
     draw(g) {
@@ -533,9 +529,10 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     obj.width = 8;
     obj.height = 8;
     obj.loadSpriteSheet("coin");
-    obj.createAnimation("create", 0, 8, 8, 100, "default");
+    obj.createAnimation("create", 0, 16, 4, 100, "create1");
+    obj.createAnimation("create1", 0, 24, 4, 100, "default");
     obj.createAnimation("default", 0, 0, 4, 100);
-    obj.createAnimation("destroy", 32, 0, 4, 100);
+    obj.createAnimation("destroy", 0, 8, 4, 100);
     obj.setAnimation("create");
 
     obj.hitbox = {

@@ -166,24 +166,26 @@
       let cw = (w - 64) / 8 | 0;
       let p = this.loadingProgress;
 
+      g.drawImage(s, 0, 16, 32, 8, -16, -8, 32, 8);
+
       let sy = 0;
       if (p === 0) {
-        sy = 16;
+        sy = 8;
       }
-      g.drawImage(s, 0, sy, 8, 16, -cw * 4, -8, 8, 16);
+      g.drawImage(s, 0, sy, 8, 8, -cw * 4, 0, 8, 8);
 
       sy = 0;
       if (p < 100) {
-        sy = 16;
+        sy = 8;
       }
-      g.drawImage(s, 16, sy, 8, 16, cw * 4, -8, 8, 16);
+      g.drawImage(s, 16, sy, 8, 8, cw * 4, 0, 8, 8);
 
       for (let st = -(cw - 2) * 4, i = st, end = (cw - 2) * 4; i <= end; i += 8) {
         sy = 0;
         if (p < (i - st) / (end - st) * 100) {
-          sy = 16;
+          sy = 8;
         }
-        g.drawImage(s, 8, sy, 8, 16, i, -8, 8, 16);
+        g.drawImage(s, 8, sy, 8, 8, i, 0, 8, 8);
       }
     }
 

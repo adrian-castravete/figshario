@@ -167,11 +167,38 @@
       let x = this.x;
       let y = this.y - ch;
 
+      let w = 0;
+      this._forCharDo((sx, sy, cw) => {
+        if (sx >= 0 && sy >= 0) {
+          w += cw + this.charSpacing;
+        } else {
+          w += this.spaceWidth + this.charSpacing;
+        }
+      });
+
+      if (this.textAlign === "center") {
+        x -= w / 2;
+      } else if (this.textAlign === "right") {
+        x -= w;
+      }
       if (this.textBaseline === "middle") {
         y += ch / 2;
       } else if (this.textBaseline === "top") {
         y += ch;
       }
+
+      this._forCharDo((sx, sy, cw) => {
+        if (sx >= 0 && sy >= 0) {
+          g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch, x, y, cw, ch);
+          x += cw + this.charSpacing;
+        } else {
+          x += this.spaceWidth + this.charSpacing;
+        }
+      });
+    }
+
+    _forCharDo(callback) {
+      let ch = this.charHeight;
 
       for (let i = 0, len = this.text.length; i < len; i += 1) {
         let c = this.text[i].charCodeAt();
@@ -192,12 +219,7 @@
           }
         });
 
-        if (sx >= 0 && sy >= 0) {
-          g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch, x, y, cw, ch);
-          x += cw + this.charSpacing;
-        } else {
-          x += this.spaceWidth + this.charSpacing;
-        }
+        callback(sx, sy, cw, ch);
       }
     }
   }

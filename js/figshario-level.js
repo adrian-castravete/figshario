@@ -18,7 +18,7 @@
 
       this.loadAssets({
         images: {
-          figplayer: "assets/images/figplayer.gif",
+          figplayer: "assets/images/figplayer8.gif",
           "tiles-grassy": "assets/images/tiles-grassy.gif",
           coin: "assets/images/coin.gif",
           smallFont: "assets/images/small.gif",
@@ -49,11 +49,14 @@
             score: {
               type: "normal",
               image: "scoreFont",
-              charWidth: 16,
-              charHeight: 24,
-              charSpacing: 1,
+              charWidth: 8,
+              charHeight: 8,
+              charSpacing: 0,
               ranges: [
-                ["0", "9"]
+                [" ", " "],
+                ["0", "3"],
+                ["4", "7"],
+                ["8", "9"]
               ]
             }
           }

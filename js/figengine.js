@@ -8,8 +8,8 @@
 
       this.canvas = canvas;
       this.context = canvas.getContext("2d");
-      this.viewportWidth = config.width || 320;
-      this.viewportHeight = config.height || 200;
+      this.viewportWidth = config.width || 160;
+      this.viewportHeight = config.height || 100;
       this.viewportZoom = config.zoom || 2;
       this.maskOutExtents = config.mask || true;
 
@@ -20,15 +20,16 @@
       this.cameraFollowY = 0;
       this.cameraFollowRatio = 5;
       this.keys = {
-        left: false,
-        up: false,
-        right: false,
-        down: false,
-        start: false,
-        buttonA: false,
-        buttonB: false,
-        debug: false
+        left: null,
+        up: null,
+        right: null,
+        down: null,
+        start: null,
+        buttonA: null,
+        buttonB: null,
+        debug: null
       };
+      this.currentTick = null;
       this.oldTick = null;
       this.debugEnabled = false;
       this.debugTopLeftText = "";
@@ -58,6 +59,7 @@
     update(tick) {
       let delta;
 
+      this.currentTick = tick;
       if (this.running && this.level) {
         if (this.oldTick == null) {
           this.oldTick = tick;
@@ -203,18 +205,18 @@
     }
 
     keyDown(key) {
-      this.keys[key] = true;
+      this.keys[key] = this.currentTick;
     }
 
     keyUp(key) {
-      this.keys[key] = false;
+      this.keys[key] = null;
       if (key === "debug") {
         this.debugEnabled = !this.debugEnabled;
       }
     }
 
     isPressed(key) {
-      return this.keys[key];
+      return !!this.keys[key];
     }
 
     moveCamera(delta) {
