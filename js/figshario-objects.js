@@ -33,6 +33,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       super.update(tick, delta);
 
       this.handleMovement(delta);
+      this.handleBounds();
       this.checkCollisions(delta);
     }
 
@@ -41,8 +42,8 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         return;
       }
 
-      this.x += this.horizVel | 0;
-      this.y += this.vertVel | 0;
+      this.x += this.horizVel * delta * 100;
+      this.y += this.vertVel * delta * 100;
 
       this.horizVel *= this.friction;
       if (Math.abs(this.horizVel) < 0.1) {
@@ -55,6 +56,29 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       }
       if (this.airborne) {
         this.vertVel = Math.min(this.level.solidLayer.tileHeight, this.vertVel + this.fallSpeed * delta);
+      }
+    }
+
+    handleBounds() {
+      let sl = this.level.solidLayer;
+      let hb = this.hitbox;
+      if (!sl || !hb) {
+        return;
+      }
+
+      let ox = sl.width * sl.tileWidth - 1;
+      let oy = sl.height * sl.tileHeight - 1;
+      if (this.x > ox - hb.right) {
+        this.x = ox - hb.right;
+      }
+      if (this.y > oy - hb.down) {
+        this.y = oy - hb.down;
+      }
+      if (this.x < -hb.left) {
+        this.x = -hb.left;
+      }
+      if (this.y < -hb.up) {
+        this.y = -hb.up;
       }
     }
 
@@ -247,6 +271,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         this.handleFlyModeKeys(delta);
       } else {
         this.handleKeys(tick, delta);
+        this.handleBounds();
       }
       this.chooseAnimation();
       this.handleCollecting();
@@ -292,8 +317,8 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
 
     handleMovement(delta) {
       if (this.flyMode) {
-        this.x += this.horizVel | 0;
-        this.y += this.vertVel | 0;
+        this.x += this.horizVel;
+        this.y += this.vertVel;
         if (Math.abs(this.horizVel) < 0.1) {
           this.horizVel = 0;
         }
@@ -312,13 +337,13 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.right;
-        this.horizVel = Math.min(Math.max((d / 100) | 0, 2), 1);
+        this.horizVel = Math.min(d / 500, 1);
       } else if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.left;
-        this.horizVel = Math.max(Math.min(-(d / 100) | 0, -2), -1);
+        this.horizVel = Math.max(-d / 500, -1);
       }
 
       if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
@@ -370,11 +395,11 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
 
     isOnAnySolid(tile) {
       return tile && (tile.ctype === "solid" ||
-                      this.isOnSlantRight(tile) ||
-                      this.isOnSlantLeft(tile));
+                      this.isOnSlopeRight(tile) ||
+                      this.isOnSlopeLeft(tile));
     }
 
-    isOnSlantRight(tile) {
+    isOnSlopeRight(tile) {
       if (tile.ctype === "slopeRU") {
         let x = this.x + 16 - tile.x | 0;
         let y = this.y + 32 - tile.y | 0;
@@ -387,7 +412,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       return false;
     }
 
-    isOnSlantLeft(tile) {
+    isOnSlopeLeft(tile) {
       if (tile.ctype === "slopeLU") {
         let x = this.x + 16 - tile.x | 0;
         let y = this.y + 32 - tile.y | 0;

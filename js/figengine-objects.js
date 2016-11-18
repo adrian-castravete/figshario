@@ -22,7 +22,7 @@
         let w = this.width;
         let h = this.height;
         g.save();
-        g.translate(this.x, this.y);
+        g.translate(this.x | 0, this.y | 0);
         g.rotate(this.rotation);
         g.drawImage(this.spriteSheet, this.sprX, this.sprY, w, h, -w / 2, -h / 2, w, h);
         g.restore();
@@ -144,7 +144,7 @@
           }
 
           g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch,
-                      x, y, cw, ch);
+                      x | 0, y | 0, cw, ch);
         }
       }
     }
@@ -189,7 +189,7 @@
 
       this._forCharDo((sx, sy, cw) => {
         if (sx >= 0 && sy >= 0) {
-          g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch, x, y, cw, ch);
+          g.drawImage(this.fontConfig.spriteSheet, sx, sy, cw, ch, x | 0, y | 0, cw, ch);
           x += cw + this.charSpacing;
         } else {
           x += this.spaceWidth + this.charSpacing;

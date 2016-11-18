@@ -84,7 +84,7 @@
         this.drawBackground();
         if (this.level) {
           g.save();
-          g.translate(this.canvas.width * 0.5 | 0, this.canvas.height * 0.5 | 0);
+          g.translate((this.canvas.width * 0.5) | 0, (this.canvas.height * 0.5) | 0);
           g.scale(this.viewportZoom, this.viewportZoom);
           if (this.maskOutExtents) {
             this.clipExtents();
@@ -205,7 +205,10 @@
     }
 
     keyDown(key) {
-      this.keys[key] = this.currentTick;
+      if (!this.keys[key]) {
+        this.keys[key] = this.currentTick;
+      }
+
     }
 
     keyUp(key) {
@@ -229,6 +232,28 @@
       } else {
         this.cameraX = this.cameraFollowX;
         this.cameraY = this.cameraFollowY;
+      }
+
+      let ox = 0;
+      let oy = 0;
+      let vw = this.viewportWidth * 0.5;
+      let vh = this.viewportHeight * 0.5;
+      let sl = this.level.solidLayer;
+      if (sl) {
+        ox = sl.width * sl.tileWidth - vw - 1;
+        oy = sl.height * sl.tileHeight - vh - 1;
+      }
+      if (this.cameraX > ox) {
+        this.cameraX = ox;
+      }
+      if (this.cameraY > oy) {
+        this.cameraY = oy;
+      }
+      if (this.cameraX < vw) {
+        this.cameraX = vw;
+      }
+      if (this.cameraY < vh) {
+        this.cameraY = vh;
       }
     }
 
