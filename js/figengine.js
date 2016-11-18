@@ -16,9 +16,6 @@
       this.running = false;
       this.cameraX = 0;
       this.cameraY = 0;
-      this.cameraFollowX = 0;
-      this.cameraFollowY = 0;
-      this.cameraFollowRatio = 5;
       this.keys = {
         left: null,
         up: null,
@@ -65,7 +62,7 @@
           this.oldTick = tick;
         }
         delta = (tick - this.oldTick) / 1000.0;
-        this.moveCamera(delta);
+        this.checkCamera();
         this.level.update(tick, delta);
         this.oldTick = tick;
       }
@@ -194,14 +191,10 @@
       c.height = height;
     }
 
-    setCamera(x, y, reset = false) {
-      // TODO: make sure the camera doesn't make the viewport overflow
-      this.cameraFollowX = x;
-      this.cameraFollowY = y;
-      if (reset) {
-        this.cameraX = x;
-        this.cameraY = y;
-      }
+    setCamera(x, y) {
+      this.cameraX = x;
+      this.cameraY = y;
+      this.checkCamera();
     }
 
     keyDown(key) {
@@ -222,18 +215,7 @@
       return !!this.keys[key];
     }
 
-    moveCamera(delta) {
-      let dx = this.cameraX - this.cameraFollowX;
-      let dy = this.cameraY - this.cameraFollowY;
-
-      if (Math.sqrt(dx * dx + dy * dy) > 0.001) {
-        this.cameraX = this.cameraX - dx * this.cameraFollowRatio * delta;
-        this.cameraY = this.cameraY - dy * this.cameraFollowRatio * delta;
-      } else {
-        this.cameraX = this.cameraFollowX;
-        this.cameraY = this.cameraFollowY;
-      }
-
+    checkCamera() {
       let ox = 0;
       let oy = 0;
       let vw = this.viewportWidth * 0.5;

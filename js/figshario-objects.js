@@ -447,15 +447,24 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     }
 
     updateCamera() {
-      let offset;
+      let e = this.engine;
+      let hvw = e.viewportWidth * 0.15;
+      let hvh = e.viewportHeight * 0.15;
 
-      if (this.direction === "right") {
-        offset = 40;
-      } else {
-        offset = -40;
+      if (this.x > e.cameraX + hvw - 0.1) {
+        e.cameraX = this.x - hvw;
+      }
+      if (this.x < e.cameraX - hvw + 0.1) {
+        e.cameraX = this.x + hvw;
       }
 
-      this.engine.setCamera(this.x + this.width / 2 + offset, this.y);
+      if (this.y > e.cameraY + hvh - 0.1) {
+        e.cameraY = this.y - hvh;
+      }
+      if (this.y < e.cameraY - hvh + 0.1) {
+        e.cameraY = this.y + hvh;
+      }
+      e.checkCamera();
     }
 
     draw(g) {
