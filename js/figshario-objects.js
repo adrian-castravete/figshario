@@ -3,16 +3,15 @@
   let figshario = this.figshario || {};
 
   let COLLECTION_PROXIMITY = 16;
-  let WORDS = `Good!, Nice!, Awesome!, Marvelous!, Superb!, Fantastic!, OK!, Bravo!, Bingo!, Ka Ching!, Grand!,
-Awoooga!, Haha!, Yabba Dabba Doo!, Scooby Dooby Doo!, SuperCaliFragilisticExpalidocious!, WOW!, Groovy!, Eureka!,
-Hurray!, Yahoo!, Yes!, Yeah!, Aha!, Abracadabra!, Alleluia!, Aloha!, Allright!, Amen!, Aright!, Yeaaaah!, Aye!,
-Ba Da Bing Ba Da Boom!, Ba Dum Tss!, BANG!, Bazinga!, Bless You!, Blimey!, Boo Ya!, Bravissimo!, Bring It On!,
-Bulls Eye!, Checkmate!, Cheers!, Congrats!, Congratulations!, Derp!, Diddly Doo!, Boing!, Doing!, Ermagerd!,
-Felicitations!, Fire in the Hole!, Fo Real!, Fo Sho!, Geronimo!, Golly!, Golly Gee!, Goo Goo Ga Ga!, Goo Goo!, Gratz!,
-Great!, Halleluiah!, Hell Yeah!, Heya!, Hocus Pocus!, Hoorah!, Ka Boom!, Ka Pow!, Meow!, Nyan-Nyan!, Nice One!,
-Oh Yeah!, Oh My!, OMG!, OMFG!, ROTF!, ROTFLOL!, LMAO!, LMFAO!, Oompa Loompa!, Peace!, POW!, Rock On!,
-The cake is a lie!, UUDDLRLRBA!, Ooh La La!, Ta Dah!, Viva!, Voila!, Way to Go!, Well Done!, Wazzup!, Woo Hoo!, Woot!,
-W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
+  let WORDS = `Good!, Nice!, Awesome!, Marvelous!, Superb!, Fantastic!, OK!, Bravo!, Bingo!,
+Ka Ching!, Grand!, Awoooga!, Haha!, WOW!, Groovy!, Eureka!, Hurray!, Yahoo!, Yes!, Yeah!, Aha!,
+Abracadabra!, Alleluia!, Aloha!, Allright!, Amen!, Aright!, Yeaaaah!, Aye!, Ba Dum Tss!, BANG!,
+Bazinga!, Bravissimo!, Bring It On!, Bulls Eye!, Checkmate!, Cheers!, Congrats!, Congratulations!,
+Derp!, Ermagerd!, Felicitations!, Gratz!, Great!, Halleluiah!, Hell Yeah!, Heya!, Hocus Pocus!,
+Hoorah!, Ka Boom!, Ka Pow!, Meow!, Nyan-Nyan!, Nice One!, Oh Yeah!, Oh My!, OMG!, OMFG!, ROTF!,
+ROTFLOL!, LMAO!, LMFAO!, Peace!, POW!, Rock On!, The cake is a lie!, UUDDLRLRBA!, Ooh La La!,
+Ta Dah!, Voila!, Way to Go!, Well Done!, Woo Hoo!, Woot!, W00T!, XOXO!, You Know It!, Yoopee!,
+Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
   `.trim().split(/\s*,\s*/);
 
 
@@ -347,7 +346,7 @@ W00T!, XOXO!, You Know It!, Yoopee!, Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       }
 
       if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-        this.vertVel = -2;
+        this.vertVel = -1.6;
         this.airborne = true;
         this.jumpStillPressed = true;
         this.engine.playSound(this.jumpSound);
