@@ -69,7 +69,7 @@
       if (this.running) {
         this.viewportZoom = Math.min(this.canvas.width / this.viewportWidth,
                                      this.canvas.height / this.viewportHeight) | 0;
-        setTimeout((newTick) => this.update(newTick), 10, Date.now());
+        window.setTimeout((newTick) => this.update(newTick), 10, Date.now());
       }
     }
 
@@ -179,7 +179,7 @@
 
     addBottomRightDebugLine(line) {
       if (this.debugEnabled) {
-        this.debugTopLeftText += `${line}\n`;
+        this.debugBottomRightText += `${line}\n`;
       }
     }
 

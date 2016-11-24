@@ -5,7 +5,8 @@
   let OBJ_CLASS_MAPPING = {
     figplayer: figshario.Player,
     coin: figshario.Coin,
-    scoin: figshario.StaticCoin
+    scoin: figshario.StaticCoin,
+    crate: figshario.Crate
   };
 
   class FigsharioLevel extends figengine.TiledLevel {
@@ -18,11 +19,12 @@
 
       this.loadAssets({
         images: {
-          figplayer: "assets/images/figplayer.gif",
-          "tiles-grassy": "assets/images/tiles-grassy.gif",
+          figplayer: "assets/images/figplayer.png",
+          "tiles-grassy": "assets/images/tiles-grassy.png",
           coin: "assets/images/coin.png",
-          smallFont: "assets/images/small.gif",
-          scoreFont: "assets/images/score.gif"
+          smallFont: "assets/images/small.png",
+          scoreFont: "assets/images/score.png",
+          crate: "assets/images/crate.png"
         },
         sounds: {
           "coin-ching": "assets/sounds/coin.wav",
@@ -90,6 +92,14 @@
     }
 
     draw(g) {
+      let w = this.engine.viewportWidth;
+      let h = this.engine.viewportHeight;
+
+      g.save();
+      g.fillStyle = "#55aaff";
+      g.fillRect(-w / 2, -h / 2, w, h);
+      g.restore();
+
       super.draw(g);
 
       if (this.score) {

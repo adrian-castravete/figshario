@@ -34,7 +34,7 @@
       }
     }
 
-    loadTiledLayerData(tilesets, layerData) {
+    loadTiledLayerData(tilesets, layerData, tileWidth, tileHeight) {
       this.width = layerData.width;
       this.height = layerData.height;
       if (layerData.properties && layerData.properties.type === "playfield") {
@@ -46,34 +46,38 @@
       for (let y = 0, ylen = this.height; y < ylen; y += 1) {
         tiles.push([]);
         for (let x = 0, xlen = this.width; x < xlen; x += 1) {
-          let tile = null;
           let tileIndex = layerData.data[y * this.width + x];
           let tileset = this.findTileset(tilesets, tileIndex);
 
           this.watchTileset(tileset);
 
-          if (tileIndex && tileset) {
-            let twidth = tileset.tilewidth;
-            let theight = tileset.tileheight;
+          let ctype = "empty";
+          let sx = -tileWidth;
+          let sy = -tileHeight;
+          let img = null;
 
+          if (tileIndex && tileset) {
             let props = tileset.tileproperties[tileIndex - tileset.firstgid];
-            let ctype = props ? props.ctype : null;
-            let cellsX = tileset.imagewidth / twidth | 0;
+            ctype = props ? props.ctype : "empty";
+            let cellsX = tileset.imagewidth / tileWidth | 0;
             let offset = tileIndex - tileset.firstgid;
 
-            tile = {
-              x: x * twidth,
-              y: y * theight,
-              w: twidth,
-              h: theight,
-              sx: offset % cellsX * twidth,
-              sy: (offset / cellsX | 0) * theight,
-              img: tileset.image,
-              ctype
-            };
+            sx = offset % cellsX * tileWidth;
+            sy = (offset / cellsX | 0) * tileHeight;
+
+            img = tileset.image;
           }
 
-          tiles[y][x] = tile;
+          tiles[y][x] = {
+            x: x * tileWidth,
+            y: y * tileHeight,
+            w: tileWidth,
+            h: tileHeight,
+            sx,
+            sy,
+            img,
+            ctype
+          };
         }
       }
       this.tiles = tiles;
@@ -99,7 +103,7 @@
         let layerData = data.layers[j];
         if (layerData.type === "tilelayer") {
           let layer = new TiledLayer(this.engine, data.tilewidth, data.tileheight);
-          layer.loadTiledLayerData(tilesets, layerData);
+          layer.loadTiledLayerData(tilesets, layerData, data.tilewidth, data.tileheight);
           if (layer.isSolid) {
             this.solidLayer = layer;
           }

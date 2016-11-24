@@ -11,7 +11,7 @@
     38: "ArrowUp",
     39: "ArrowRight",
     40: "ArrowDown",
-    13: "Return",
+    13: "Enter",
     17: "Control",
     32: " ",
     114: "F3"
@@ -21,6 +21,7 @@
     ArrowUp: "up",
     ArrowRight: "right",
     ArrowDown: "down",
+    Enter: "start",
     Return: "start",
     Control: "buttonB",
     " ": "buttonA",

@@ -29,6 +29,8 @@
       if (this.score) {
         this.score.update(tick);
       }
+
+      this.addBottomRightDebugLine(this.keyLog);
     }
 
     drawBackground() {

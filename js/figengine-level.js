@@ -37,7 +37,7 @@
       for (let j = 0; j < this.tiles.length; j += 1) {
         for (let i = 0; i < this.tiles[j].length; i += 1) {
           let tile = this.tiles[j][i];
-          if (tile) {
+          if (tile && tile.img) {
             g.drawImage(tile.img, tile.sx, tile.sy, tile.w, tile.h,
                         i * this.tileWidth, j * this.tileHeight, tile.w, tile.h);
             // g.strokeStyle = "#000000";

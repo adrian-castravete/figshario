@@ -246,8 +246,8 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       this.loadSpriteSheet("figplayer");
       this.createAnimation("lookRight", 0, 0, 2, 250);
       this.createAnimation("lookLeft", 0, 40, 2, 250);
-      this.createAnimation("walkRight", 64, 0, 4, 100);
-      this.createAnimation("walkLeft", 64, 40, 4, 100);
+      this.createAnimation("walkRight", 64, 0, 4, 200);
+      this.createAnimation("walkLeft", 64, 40, 4, 200);
       this.setAnimation("lookRight");
 
       this.direction = "right";
@@ -294,23 +294,25 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
 
     handleFlyModeKeys(delta) {
       this.directionPressed = false;
+      this.horizVel = 0;
+      this.vertVel = 0;
       if (this.engine.isPressed("right")) {
         this.direction = "right";
         this.directionPressed = true;
-        this.horizVel = 8 * delta;
+        this.horizVel = 100 * delta;
       }
       if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
-        this.horizVel = 8 * delta;
+        this.horizVel = -100 * delta;
       }
       if (this.engine.isPressed("up")) {
         this.directionPressed = true;
-        this.vertVel = 8 * delta;
+        this.vertVel = -100 * delta;
       }
       if (this.engine.isPressed("down")) {
         this.directionPressed = true;
-        this.vertVel = 8 * delta;
+        this.vertVel = 100 * delta;
       }
     }
 
@@ -336,13 +338,13 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.right;
-        this.horizVel = Math.min(d / 250, 2);
+        this.horizVel = Math.min(d / 250, 1);
       } else if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.left;
-        this.horizVel = Math.max(-d / 250, -2);
+        this.horizVel = Math.max(-d / 250, -1);
       }
 
       if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
@@ -606,11 +608,46 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     }
   }
 
+  class Crate extends figengine.Sprite {
+    constructor(engine, level) {
+      super(engine, level);
+
+      this.shineThreshold = 0.01;
+      this.unshineDelay = 2000;
+
+      this.oldShine = 0;
+
+      this.loadSpriteSheet("crate");
+      this.createAnimation("default", 0, 0, 1);
+      this.createAnimation("shine", 16, 0, 7, 100, "default");
+
+      this.isSolid = false;
+    }
+
+    update(tick, delta) {
+      super.update(tick, delta);
+
+      if (!this.isSolid) {
+        let cell = this.level.solidLayer.getAt(this.x, this.y);
+        if (cell) {
+          cell.ctype = "solid";
+          this.isSolid = true;
+        }
+      }
+
+      if (Math.random() < this.shineThreshold && tick > this.unshineDelay + this.oldShine) {
+        this.setAnimation("shine");
+        this.oldShine = tick;
+      }
+    }
+  }
+
   figshario.MovingSprite = MovingSprite;
   figshario.Player = Player;
   figshario.Score = Score;
   figshario.Floaty = Floaty;
   figshario.StaticCoin = StaticCoin;
   figshario.Coin = Coin;
+  figshario.Crate = Crate;
   this.figshario = figshario;
 }).call(this);
