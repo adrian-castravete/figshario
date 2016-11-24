@@ -4,7 +4,7 @@
   let game = new figshario.Figshario(viewport);
 
   game.start();
-  game.loadLevel("assets/maps/level1c.json");
+  game.loadLevel("assets/maps/level1b.json");
 
   let KEY_TRANSLATIONS = {
     37: "ArrowLeft",

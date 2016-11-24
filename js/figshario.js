@@ -7,6 +7,9 @@
     constructor(canvas, config) {
       super(canvas, config);
 
+      this.viewportWidth = 320;
+      this.viewportHeight = 200;
+
       this.keyLog = [];
     }
 

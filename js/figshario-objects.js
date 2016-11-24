@@ -234,20 +234,20 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     constructor(engine, level) {
       super(engine, level);
 
-      this.width = 16;
-      this.height = 16;
+      this.width = 32;
+      this.height = 40;
       this.hitbox = {
-        left: -3,
-        up: -7,
-        right: 3,
-        down: 7
+        left: -4,
+        up: -12,
+        right: 4,
+        down: 12
       };
 
       this.loadSpriteSheet("figplayer");
-      this.createAnimation("lookRight", 0, 32, 2, 250);
-      this.createAnimation("lookLeft", 0, 48, 2, 250);
-      this.createAnimation("walkRight", 0, 0, 8, 100);
-      this.createAnimation("walkLeft", 0, 16, 8, 100);
+      this.createAnimation("lookRight", 0, 0, 2, 250);
+      this.createAnimation("lookLeft", 0, 40, 2, 250);
+      this.createAnimation("walkRight", 64, 0, 4, 100);
+      this.createAnimation("walkLeft", 64, 40, 4, 100);
       this.setAnimation("lookRight");
 
       this.direction = "right";
@@ -336,17 +336,17 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.right;
-        this.horizVel = Math.min(d / 500, 1);
+        this.horizVel = Math.min(d / 250, 2);
       } else if (this.engine.isPressed("left")) {
         this.direction = "left";
         this.directionPressed = true;
 
         let d = tick - this.engine.keys.left;
-        this.horizVel = Math.max(-d / 500, -1);
+        this.horizVel = Math.max(-d / 250, -2);
       }
 
       if (this.engine.isPressed("buttonA") && !this.jumpStillPressed && !this.airborne) {
-        this.vertVel = -1.6;
+        this.vertVel = -2.4;
         this.airborne = true;
         this.jumpStillPressed = true;
         this.engine.playSound(this.jumpSound);
