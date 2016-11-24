@@ -18,9 +18,9 @@
 
       this.loadAssets({
         images: {
-          figplayer: "assets/images/figplayer8.gif",
+          figplayer: "assets/images/figplayer8.png",
           "tiles-grassy": "assets/images/tiles-grassy.gif",
-          coin: "assets/images/coin.gif",
+          coin: "assets/images/coin.png",
           smallFont: "assets/images/small.gif",
           scoreFont: "assets/images/score.gif"
         },
