@@ -91,6 +91,7 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       if (tile && this.vertVel < 0) {
         this.vertVel = 0;
         this.positionUnderSolid(tile);
+        this.collisionUp(tile);
       }
 
       // On ground
@@ -100,6 +101,7 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         if (this.vertVel >= 0) {
           this.vertVel = 0;
         }
+        this.collisionDown(tile);
       }
       if (tile) {
         this.positionOnSolid(tile);
@@ -109,12 +111,14 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       tile = this.getSolidAt(this.x + this.hitbox.left + 1, this.y);
       if (tile && tile.ctype === "solid") {
         this.x = tile.x + tile.w + this.hitbox.right;
+        this.collisionLeft(tile);
       }
 
       // Right wall
       tile = this.getSolidAt(this.x + this.hitbox.right - 1, this.y);
       if (tile) {
         this.x = tile.x + this.hitbox.left;
+        this.collisionRight(tile);
       }
 
       // Inside wall
@@ -123,6 +127,14 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
         this.vertVel = 0;
       }
     }
+
+    collisionLeft() {}
+
+    collisionUp() {}
+
+    collisionRight() {}
+
+    collisionDown() {}
 
     positionOnSolid(tile) {
       let layer = this.level.solidLayer;
@@ -227,6 +239,153 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       }
 
       return false;
+    }
+  }
+
+  class Floaty extends figengine.SmartFontSprite {
+    constructor(engine, level) {
+      super(engine, level, "floaty");
+
+      this.textAlign = "center";
+      this.textBaseline = "middle";
+
+      this.climbed = 0;
+      this.blinking = false;
+      this.drawMe = true;
+    }
+
+    update(tick, delta) {
+      let climb = delta * 25;
+      this.climbed += climb;
+      this.y -= climb;
+
+      if (this.climbed > 32) {
+        this.blinking = true;
+      }
+      if (this.climbed >= 48) {
+        this.destroy();
+      }
+    }
+
+    draw(g) {
+      if (this.blinking) {
+        this.drawMe = !this.drawMe;
+      }
+
+      if (this.drawMe) {
+        super.draw(g);
+      }
+    }
+
+    destroy() {
+      this.level.removeObject(this);
+    }
+  }
+
+  function makeCoinLike(obj) {
+    obj.width = 8;
+    obj.height = 8;
+    obj.loadSpriteSheet("coin");
+    obj.createAnimation("create", 0, 16, 4, 100, "create1");
+    obj.createAnimation("create1", 0, 24, 4, 100, "default");
+    obj.createAnimation("default", 0, 0, 4, 100);
+    obj.createAnimation("destroy", 0, 8, 4, 100);
+    obj.setAnimation("create");
+
+    obj.hitbox = {
+      left: -2,
+      up: -2,
+      right: 2,
+      down: 2
+    };
+
+    obj.isCollectible = true;
+    obj.destroy = function() {
+      let floaty = new Floaty(this.engine, this.level);
+      floaty.x = this.x;
+      floaty.y = this.y;
+      floaty.text = WORDS[Math.random() * WORDS.length | 0];
+
+      let sound = this.level.getSoundAsset("coin-ching");
+      this.engine.playSound(sound);
+
+      this.level.addObject(floaty);
+      this.level.removeObject(this);
+    };
+  }
+
+  class StaticCoin extends figengine.Sprite {
+    constructor(engine, level) {
+      super(engine, level);
+
+      makeCoinLike(this);
+    }
+  }
+
+  class Coin extends MovingSprite {
+    constructor(engine, level) {
+      super(engine, level);
+
+      makeCoinLike(this);
+    }
+  }
+
+  class Crate extends figengine.Sprite {
+    constructor(engine, level) {
+      super(engine, level);
+
+      this.width = 32;
+      this.height = 32;
+      this.anchorY = 8;
+
+      this.shineThreshold = 0.01;
+      this.unshineDelay = 2000;
+
+      this.oldShine = 0;
+      this.crateType = "simple";
+
+      this.loadSpriteSheet("crate");
+      this.createAnimation("default", 0, 0, 1);
+      this.createAnimation("shine", 32, 0, 7, 100, "default");
+      this.createAnimation("bump", 0, 32, 8, 50, "default");
+      this.createAnimation("destroy", 32, 64, 7, 50);
+      this.createAnimation("block", 0, 64, 1);
+      this.setAnimation("default");
+
+      this.isSolid = false;
+    }
+
+    update(tick, delta) {
+      super.update(tick, delta);
+
+      if (!this.isSolid) {
+        let cell = this.level.solidLayer.getAt(this.x, this.y);
+        if (cell) {
+          cell.ctype = "solid";
+          cell.crate = this;
+          this.isSolid = true;
+        }
+      }
+
+      if (this.getAnimation() === "default" && Math.random() < this.shineThreshold &&
+          tick > this.unshineDelay + this.oldShine) {
+        this.setAnimation("shine");
+        this.oldShine = tick;
+      }
+    }
+
+    takeHit() {
+      this.setAnimation("bump");
+      this.generateCoin();
+    }
+
+    generateCoin() {
+      let c = new Coin(this.engine, this.level);
+
+      c.x = this.x;
+      c.y = this.y - this.height / 2 - c.height / 2;
+      c.vertVel = -1.5;
+      this.level.objects.push(c);
     }
   }
 
@@ -477,6 +636,12 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
                   this.hitbox.right - this.hitbox.left, this.hitbox.down - this.hitbox.up);
       }
     }
+
+    collisionUp(tile) {
+      if (tile.crate) {
+        tile.crate.takeHit(this);
+      }
+    }
   }
 
   class Score extends figengine.FontSprite {
@@ -517,128 +682,6 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
       g.globalAlpha = this.opacity;
       super.draw(g);
       g.restore();
-    }
-  }
-
-  class Floaty extends figengine.SmartFontSprite {
-    constructor(engine, level) {
-      super(engine, level, "floaty");
-
-      this.textAlign = "center";
-      this.textBaseline = "middle";
-
-      this.climbed = 0;
-      this.blinking = false;
-      this.drawMe = true;
-    }
-
-    update(tick, delta) {
-      let climb = delta * 25;
-      this.climbed += climb;
-      this.y -= climb;
-
-      if (this.climbed > 32) {
-        this.blinking = true;
-      }
-      if (this.climbed >= 48) {
-        this.destroy();
-      }
-    }
-
-    draw(g) {
-      if (this.blinking) {
-        this.drawMe = !this.drawMe;
-      }
-
-      if (this.drawMe) {
-        super.draw(g);
-      }
-    }
-
-    destroy() {
-      this.level.removeObject(this);
-    }
-  }
-
-  function makeCoinLike(obj) {
-    obj.width = 8;
-    obj.height = 8;
-    obj.loadSpriteSheet("coin");
-    obj.createAnimation("create", 0, 16, 4, 100, "create1");
-    obj.createAnimation("create1", 0, 24, 4, 100, "default");
-    obj.createAnimation("default", 0, 0, 4, 100);
-    obj.createAnimation("destroy", 0, 8, 4, 100);
-    obj.setAnimation("create");
-
-    obj.hitbox = {
-      left: -2,
-      up: -2,
-      right: 2,
-      down: 2
-    };
-
-    obj.isCollectible = true;
-    obj.destroy = function() {
-      let floaty = new Floaty(this.engine, this.level);
-      floaty.x = this.x;
-      floaty.y = this.y;
-      floaty.text = WORDS[Math.random() * WORDS.length | 0];
-
-      let sound = this.level.getSoundAsset("coin-ching");
-      this.engine.playSound(sound);
-
-      this.level.addObject(floaty);
-      this.level.removeObject(this);
-    };
-  }
-
-  class StaticCoin extends figengine.Sprite {
-    constructor(engine, level) {
-      super(engine, level);
-
-      makeCoinLike(this);
-    }
-  }
-
-  class Coin extends MovingSprite {
-    constructor(engine, level) {
-      super(engine, level);
-
-      makeCoinLike(this);
-    }
-  }
-
-  class Crate extends figengine.Sprite {
-    constructor(engine, level) {
-      super(engine, level);
-
-      this.shineThreshold = 0.01;
-      this.unshineDelay = 2000;
-
-      this.oldShine = 0;
-
-      this.loadSpriteSheet("crate");
-      this.createAnimation("default", 0, 0, 1);
-      this.createAnimation("shine", 16, 0, 7, 100, "default");
-
-      this.isSolid = false;
-    }
-
-    update(tick, delta) {
-      super.update(tick, delta);
-
-      if (!this.isSolid) {
-        let cell = this.level.solidLayer.getAt(this.x, this.y);
-        if (cell) {
-          cell.ctype = "solid";
-          this.isSolid = true;
-        }
-      }
-
-      if (Math.random() < this.shineThreshold && tick > this.unshineDelay + this.oldShine) {
-        this.setAnimation("shine");
-        this.oldShine = tick;
-      }
     }
   }
 

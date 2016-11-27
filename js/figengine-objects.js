@@ -13,6 +13,8 @@
       this.spriteSheet = null;
       this.sprX = 0;
       this.sprY = 0;
+      this.anchorX = 0;
+      this.anchorY = 0;
     }
 
     update() {}
@@ -24,7 +26,7 @@
         g.save();
         g.translate(this.x | 0, this.y | 0);
         g.rotate(this.rotation);
-        g.drawImage(this.spriteSheet, this.sprX, this.sprY, w, h, -w / 2, -h / 2, w, h);
+        g.drawImage(this.spriteSheet, this.sprX, this.sprY, w, h, -w / 2 - this.anchorX, -h / 2 - this.anchorY, w, h);
         g.restore();
       }
     }
@@ -43,6 +45,10 @@
 
     createAnimation(name, x, y, length, delay, callback) {
       this.animations[name] = {x, y, length, delay, callback};
+    }
+
+    getAnimation() {
+      return this.currentAnim;
     }
 
     setAnimation(name) {

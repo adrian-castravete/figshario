@@ -13,9 +13,11 @@
     constructor(engine, fileName) {
       super(engine, fileName);
 
+      this.player = null;
+
+      this.letTheMoneyRain = false;
       this.lastCollectibleTick = null;
       this.collectibleDelay = 0;
-      this.player = null;
 
       this.loadAssets({
         images: {
@@ -72,7 +74,8 @@
     update(tick, delta) {
       super.update(tick, delta);
 
-      if (this.lastCollectibleTick == null || tick - this.lastCollectibleTick >= this.collectibleDelay) {
+      if (this.letTheMoneyRain &&
+          (this.lastCollectibleTick == null || tick - this.lastCollectibleTick >= this.collectibleDelay)) {
         this.generateCollectible();
         this.lastCollectibleTick = tick;
       }
