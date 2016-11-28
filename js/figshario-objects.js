@@ -685,6 +685,57 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
     }
   }
 
+  class Enemy extends MovingSprite {
+    constructor(engine, level) {
+      super(engine, level);
+
+      this.width = 32;
+      this.height = 32;
+      this.hitbox = {
+        left: -10,
+        up: -4,
+        right: 10,
+        down: 16
+      };
+
+      this.direction = "right";
+      this.speed = 25;
+
+      this.loadSpriteSheet("enemy");
+      this.createAnimation("right", 0, 0, 2, 300);
+      this.createAnimation("left", 0, 32, 2, 300);
+      this.setAnimation("right");
+    }
+
+    update(tick, delta) {
+      this.horizVel = delta * this.speed;
+
+      if (this.direction === "left") {
+        this.horizVel = -this.horizVel;
+      }
+
+      super.update(tick, delta);
+    }
+
+    collisionLeft() {
+      this.switchDirection();
+    }
+
+    collisionRight() {
+      this.switchDirection();
+    }
+
+    switchDirection() {
+      if (this.direction === "right") {
+        this.setAnimation("left");
+        this.direction = "left";
+      } else {
+        this.setAnimation("right");
+        this.direction = "right";
+      }
+    }
+  }
+
   figshario.MovingSprite = MovingSprite;
   figshario.Player = Player;
   figshario.Score = Score;
@@ -692,5 +743,6 @@ Yummy!, ZOMG!, Zowie!, ZZZ!, XYZZY!
   figshario.StaticCoin = StaticCoin;
   figshario.Coin = Coin;
   figshario.Crate = Crate;
+  figshario.Enemy = Enemy;
   this.figshario = figshario;
 }).call(this);

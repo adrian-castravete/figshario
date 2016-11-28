@@ -6,7 +6,8 @@
     figplayer: figshario.Player,
     coin: figshario.Coin,
     scoin: figshario.StaticCoin,
-    crate: figshario.Crate
+    crate: figshario.Crate,
+    enemy: figshario.Enemy
   };
 
   class FigsharioLevel extends figengine.TiledLevel {
@@ -26,7 +27,8 @@
           coin: "assets/images/coin.png",
           smallFont: "assets/images/small.png",
           scoreFont: "assets/images/score.png",
-          crate: "assets/images/crate.png"
+          crate: "assets/images/crate.png",
+          enemy: "assets/images/enemy.png"
         },
         sounds: {
           "coin-ching": "assets/sounds/coin.wav",
