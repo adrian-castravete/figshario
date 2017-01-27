@@ -699,6 +699,7 @@ export class Enemy extends MovingSprite {
 
     this.direction = "right";
     this.speed = 25;
+    this.alive = true;
 
     this.loadSpriteSheet("enemy");
     this.createAnimation("right", 0, 0, 2, 300);
@@ -731,6 +732,73 @@ export class Enemy extends MovingSprite {
     } else {
       this.setAnimation("right");
       this.direction = "right";
+    }
+  }
+
+  die() {
+    this.alive = false;
+  }
+}
+
+class EnemyGenerator extends Sprite {
+  constructor(engine, level) {
+    super(engine, level);
+
+    this.inView = false;
+    this.enemyClass = Enemy;
+    this.generatedDestroyed = false;
+    this.generatedEnemy = null;
+  }
+
+  update() {
+    this.engine.addBottomLeftDebugLine(`In View:${this.inView}`);
+    this.engine.addBottomLeftDebugLine(`Enemy:${this.generatedEnemy}`);
+    this.engine.addBottomLeftDebugLine(`Destroyed:${this.generatedDestroyed}`);
+    if (this.generatedEnemy && !this.generatedEnemy.alive) {
+      this.generatedDestroyed = true;
+    }
+
+    if (this.generatedDestroyed) {
+      return;
+    }
+
+    if (this.inView) {
+      if (!this.isInView()) {
+        this.inView = false;
+        this.deleteEnemy();
+      }
+    } else {
+      if (this.isInView()) {
+        this.inView = true;
+        this.generateEnemy();
+      }
+    }
+  }
+
+  isInView() {
+    let cx = this.engine.cameraX;
+    let cy = this.engine.camereY;
+    let hw = (this.viewportWidth / 2) | 0;
+    let hh = (this.viewportHeight / 2) | 0;
+
+    return this.x > cx - hw && this.x < cx + hw && this.y > cy - hh && this.y < cy + hh;
+  }
+
+  generateEnemy() {
+    this.deleteEnemy();
+
+    let enemy = new this.enemyClass(this.engine, this.level);
+
+    enemy.x = this.x;
+    enemy.y = this.y;
+    // this.level.addObject(enemy);
+
+    this.generatedEnemy = enemy;
+  }
+
+  deleteEnemy() {
+    if (this.generatedEnemy) {
+      this.level.removeObject(this.generatedEnemy);
     }
   }
 }

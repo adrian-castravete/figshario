@@ -1,4 +1,4 @@
-import {Player, Coin, StaticCoin, Enemy, Crate, Score} from './figshario-objects';
+import {Player, Coin, StaticCoin, EnemyGenerator, Crate, Score} from './figshario-objects';
 import TiledLevel from './tiled';
 
 let OBJ_CLASS_MAPPING = {
@@ -6,7 +6,7 @@ let OBJ_CLASS_MAPPING = {
   coin: Coin,
   scoin: StaticCoin,
   crate: Crate,
-  enemy: Enemy
+  enemy: EnemyGenerator
 };
 
 export default class FigsharioLevel extends TiledLevel {

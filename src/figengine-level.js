@@ -142,6 +142,11 @@ export class Level extends Loader {
   }
 
   updateNormal(tick, delta) {
+    let cx = this.engine.cameraX;
+    let cy = this.engine.cameraY;
+    let hw = this.engine.viewportWidth * 0.618;
+    let hh = this.engine.viewportHeight * 0.618;
+
     for (let i = 0, len = this.objects.length; i < len; i += 1) {
       let obj = this.objects[i];
 
