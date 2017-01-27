@@ -1,5 +1,5 @@
-import FigEngine from './figengine';
-import FigsharioLevel from './figshario-level';
+import FigEngine from 'figengine';
+import FigsharioLevel from './level';
 
 let KONAMI_CODE = ["up", "up", "down", "down", "left", "right", "left", "right", "buttonB", "buttonA", "start"];
 

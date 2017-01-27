@@ -1,4 +1,4 @@
-import {Sprite, FontSprite, SmartFontSprite} from './figengine-objects';
+import {Sprite, FontSprite, SmartFontSprite} from '../figengine/objects';
 
 let COLLECTION_PROXIMITY = 16;
 let WORDS = `Good!, Nice!, Awesome!, Marvelous!, Superb!, Fantastic!, OK!, Bravo!, Bingo!,

@@ -1,5 +1,6 @@
 {
   "name": "figshario",
+  "version": "0.1.0",
   "title": "figshario - Super Mario Clone",
   "description": "A Super Mario clone for the figshare team page.",
   "author": {
@@ -13,15 +14,26 @@
     "browserify": "^14.0.0",
     "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.9.0",
-    "gulp": "^3.9.1",
-    "gulp-uglify": "^2.0.1",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
+    "figengine": "file:../figengine",
+    "uglifyjs": "^2.4.10"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/adrian-castravete/figshario.git"
+  "repository": "github:adrian-castravete/figshario",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
   },
-  "license": "MIT"
+  "scripts": {
+    "build": "browserify src/starter.js -o js/figshario.js",
+    "build-min": "browserify src/starter.js | uglifyjs --compress --mangle -o js/figshario.js",
+    "watch": "watchify src/starter.js -v -o js/figshario.js"
+  }
 }

@@ -1,4 +1,4 @@
-import {Level, Layer} from './figengine-level';
+import {Level, Layer} from './figengine/level';
 
 class TiledLayer extends Layer {
   findTileset(tilesets, tileIndex) {

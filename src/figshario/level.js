@@ -1,5 +1,5 @@
-import {Player, Coin, StaticCoin, EnemyGenerator, Crate, Score} from './figshario-objects';
-import TiledLevel from './tiled';
+import {Player, Coin, StaticCoin, EnemyGenerator, Crate, Score} from './objects';
+import TiledLevel from '../tiled';
 
 let OBJ_CLASS_MAPPING = {
   figplayer: Player,
