@@ -1,6 +1,10 @@
 {
+  "description": "A Super Mario clone for the figshare team page (and engine)",
+  "repository": "git@github.com:adrian-castravete/figshario.git",
+  "license": "MIT",
   "devDependencies": {
     "cake": "^0.1.1",
+    "coffeelint": "^2.0.6",
     "coffeescript": "^2.0.1",
     "watch-fs": "0.0.7"
   }

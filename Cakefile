@@ -8,8 +8,8 @@ targetFileName = 'app'
 
 
 projectConfig = (project) ->
-  sourceCoffeeDir = "#{project}/src/coffee-script"
-  targetJsDir = "#{project}/src/js"
+  sourceCoffeeDir = "#{project}/coffee-script"
+  targetJsDir = "#{project}/js"
 
   targetCoffeeFile = "#{sourceCoffeeDir}/#{targetFileName}.coffee"
   targetJsFile = "#{targetJsDir}/#{targetFileName}.js"
@@ -31,6 +31,9 @@ buildSubProject = (project) ->
   contents = []
   remaining = files.length
 
+  console.log("Compiled the following list:")
+  for file in files
+    console.log("  #{file}")
   for file, index in files
     fs.readFile file, 'utf8', (error, fileContents) ->
       if error
@@ -42,7 +45,7 @@ buildSubProject = (project) ->
         finishedReading()
 
   finishedReading = ->
-    fs.writeFile config.targetCoffeeFile, contents.join('\n\n'), 'utf8', (error) ->
+    callback = (error) ->
       if error
         console.error "Error writing #{config.targetCoffeeFile}:\n#{error}"
         return
@@ -54,7 +57,14 @@ buildSubProject = (project) ->
 
         console.log "Compiled #{config.targetJsFile}"
         fs.unlink config.targetCoffeeFile, (error) ->
-          console.error "Failed to unlink #{config.targetCoffeeFile}:\n#{error}"
+          if error
+            message = "Failed to unlink #{config.targetCoffeeFile}:\n#{error}"
+            console.error error
+
+    fileName = config.targetCoffeeFile
+    contents = contents.join('\n\n')
+
+    fs.writeFile fileName, contents, 'utf8', callback
 
 
 walkCollect = (dir, exts) ->
@@ -66,15 +76,21 @@ walkCollect = (dir, exts) ->
   files = fs.readdirSync(dir)
   for file in files
     path = "#{dir}/#{file}"
-    stat = fs.statSync path
-    if stat.isDirectory()
-      subFileList = walkCollect path, exts
-      fileList = fileList.concat subFileList
-    else
-      for ext in exts
-        if file.match ".*#{ext}$"
-          fileList.push path
-          break
+
+    if fs.existsSync "./#{path}"
+      stat = fs.statSync path
+
+      if stat.isDirectory()
+        subFileList = walkCollect path, exts
+        fileList = fileList.concat subFileList
+
+      else
+        for ext in exts
+          if file.match ".*#{ext}$"
+            # Exclude emacs backup files
+            if file and !file.match ".*\/?\.\#[^\/]+$"
+              fileList.push path
+              break
 
   fileList
 
@@ -92,16 +108,19 @@ watchSubProject = (project) ->
   }
 
   watcher.on 'create', (path) ->
-    console.log "Project #{project}, file #{path} created"
-    buildSubProject project
+    if !path.match "#{config.targetCoffeeFile}$"
+      console.log "Project #{project}, file #{path} created"
+      buildSubProject project
 
   watcher.on 'change', (path) ->
-    console.log "Project #{project}, file #{path} changed"
-    buildSubProject project
+    if !path.match "#{config.targetCoffeeFile}$"
+      console.log "Project #{project}, file #{path} changed"
+      buildSubProject project
 
   watcher.on 'delete', (path) ->
-    console.log "Project #{project}, file #{path} deleted"
-    buildSubProject project
+    if !path.match "#{config.targetCoffeeFile}$"
+      console.log "Project #{project}, file #{path} deleted"
+      buildSubProject project
 
   watcher.start (error, failed) ->
     console.log "Watcher starterd for project #{project}."

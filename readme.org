@@ -1,0 +1,28 @@
+#+TITLE: figshario
+
+[[file:./assets/icons/128.png]]
+
+* Introduction
+This is a Super Mario clone or better said a platformer.
+
+* Usage
+Just play with the *cursor keys* and jump with *space*.
+
+* Contributing
+The project is licensed with the *MIT* licence and uses *npm*.
+
+** Dependencies
+To install the necessary *node* dependencies do:
+
+~npm install~
+
+** Cake commands
+After installing the dependencies there are two *cake* commands made available:
+
+~cake build~
+
+~cake watch~
+
+The first just builds the bundle _app.js_ file for each subproject while the second
+matches for any changes in the _*.coffee_ files for each subproject and launches the
+*build* step.
