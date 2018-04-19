@@ -1,0 +1,62 @@
+figshario
+=========
+
+This is a Super Mario clone or better said a platformer
+
+Usage
+-----
+
+Just play with the **cursor keys** and jump with **space**.
+
+Specifications
+--------------
+* 320x200 pixel screen.
+* 1024 8x8 2-bit tiles.
+* 64x64 tile map.
+* 32 palettes of 4 colours with 2 byte (RGB-555) colour definitions.
+
+Memory Layout
+-------------
+
+[cols=">.^9,.^38,>.^8,.^45",options="header"]
+|===================================================================================================
+| ADDR ^| NAME                        | SIZE ^| DESCRIPTION
+| 0000  | SPRITES & BACKGROUND TILES  | 4000  | 1024 (tiles) * 16 (bytes/tile) = 16384 (bytes)
+                                                footnote:[
+                                                  A tile is formed of 8 rows of 8 2-bit pixels.
+                                                  Which means 16 bits per row, so 2 bytes.
+                                                ]
+| 4000  | TILE MAP                    | 2000  | 64 (width) * 64 (height) * 2 (tileInfo) =
+                                                4096 * 2 (index + attr footnote:[
+                                                  A tile map entry is formed of two bytes.
+                                                  The first byte represents the lower 8 bits of
+                                                  the tile index.
+                                                  The second byte's first two bits represent the rest
+                                                  of the index while the other bits represent
+                                                  the palette and the priority bit.
+                                                  For a visual representation see
+                                                  <<_map_entry_breakdown>>.
+                                                ]) = 8192 (bytes)
+| 6000  | PALETTES                    | 0100  | 32 (paletteItems) = 32 * 4 (colours) =
+                                                256 (bytes) (a colour entry is 15-bits (2 bytes))
+| 6100  | SCROLL_X & SCROLL_Y         | 0002  | The scroll variables; (top-right corner).
+| 6102  | END                         | 0000  |
+|===================================================================================================
+
+<<<
+
+Map Entry Breakdown
+~~~~~~~~~~~~~~~~~~~
+
+[cols="16*^",options="header"]
+|==========================================
+8+|        SECOND       8+|     FIRST
+  |7   |6|5|4|3|2   |1|0  |7|6|5|4|3|2|1|0
+  |F   |E|D|C|B|A   |9|8  |7|6|5|4|3|2|1|0
+  |O 5+| PALETTE 10+|       INDEX
+|==========================================
+
+The priority bit `O` means the capability of the tile being shown before the sprite.
+If the bit is set, instead of the sprite appearing in front of the tile, it will appear behind it.
+
+// vim: set tw=80 lbr cc=80:
