@@ -1,43 +1,9 @@
-class Figshario:
+from figengine import FigEngine
 
-    def __init__(self):
-        self.width = 320
-        self.height = 200
-
-        self.running = False
-
-        cvs = document.createElement('canvas')
-        cvs.width = 320
-        cvs.height = 200
-
-        ctx = cvs.getContext('2d')
-
-        self.canvas = cvs
-        self.context = ctx
-
-        Figshario.last_game = self
-
-    def start(self):
-        self.running = True
-
-    def stop(self):
-        self.running = False
-
-    def update(self, tick):
-        pass
-
-    def draw(self):
-        g = self.context
-
-        g.fillStyle = '#000'
-        g.fillRect(0, 0, self.width, self.height)
-
-    @classmethod
-    def stop_last(cls):
-        cls.last_game.stop()
+from figshario import FigsharioMainMenu
 
 
-def main():
+def setup():
     cvs = document.getElementById('paper')
     ctx = cvs.getContext('2d')
 
@@ -47,7 +13,7 @@ def main():
         'scale': 2
     }
 
-    game = Figshario()
+    game = FigEngine()
     game.start()
 
     def resize():
@@ -81,6 +47,19 @@ def main():
             window.requestAnimationFrame(anim_frame)
 
     window.requestAnimationFrame(anim_frame)
+
+    def stop_game():
+        game.stop()
+
+    window.stop_game = stop_game
+
+    return game
+
+
+def main():
+    game = setup()
+    scene = FigsharioMainMenu(game)
+    game.push_scene(scene)
 
 
 if __name__ == '__main__':

@@ -4,10 +4,10 @@ configure:
 	pip3 install transcrypt
 
 build:
-	transcrypt -bmn figshario.py
+	transcrypt -xp figshario -xp figengine -bmn starter.py
 
 minify:
-	transcrypt -b figshario.py
+	transcrypt -b starter.py
 
 server:
 	python3 -m http.server 8086
